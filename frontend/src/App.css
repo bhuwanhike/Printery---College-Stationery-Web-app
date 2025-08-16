@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-shimmer: shimmer 4s infinite linear;
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  --animate-text-flow: text-flow 5s infinite linear;
+  @keyframes text-flow {
+    0% {
+      scale: 1;
+    }
+    50% {
+      scale: 1.1;
+    }
+    100% {
+      scale: 1;
+    }
+  }
+}
+
+.scroll-hidden::-webkit-scrollbar {
+  display: none;
+}
