@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { File } from "lucide-react";
-import { OctagonAlert, CircleCheckBig } from "lucide-react";
+import {} from "lucide-react";
+import { File, OctagonAlert, CircleCheckBig, Trash2, X } from "lucide-react";
 import { useUser } from "../context/useUser";
-import PrinteryButton from "../components/PrinteryButton";
 
 const pdfIcon = "https://placehold.co/40x40/737373/000000?text=PDF";
 const fileIcon = "https://placehold.co/40x40/737373/000000?text=FILE";
@@ -16,6 +15,7 @@ type FileOBJ = {
   isColored: boolean;
   status: string;
   qty: number;
+  deletedByUser: boolean;
   userId: string;
 };
 type FileOBJ2 = {
@@ -26,6 +26,7 @@ type FileOBJ2 = {
   isColored: boolean;
   status: string;
   qty: number;
+  deletedByUser: boolean;
   userId: string;
   _id: string;
   publicId: string;
@@ -107,6 +108,62 @@ const Dashboard = () => {
     }
   };
 
+  const deleteSelectedFile = useCallback(async (_id: string) => {
+    try {
+      await fetch(`http://localhost:3000/upload`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ _id }),
+      });
+      setCompletedTabFiles((prev) => prev.filter((file) => file._id !== _id));
+
+      const removedPrintFiles = new Set(
+        JSON.parse(localStorage.getItem("removedPrintFiles") || "[]")
+      );
+
+      removedPrintFiles.add(_id);
+
+      localStorage.setItem(
+        "removedPrintFiles",
+        JSON.stringify(Array.from(removedPrintFiles))
+      );
+    } catch (error) {
+      console.error("Error deleting file:", error);
+    }
+  }, []);
+
+  const clearAllFiles = useCallback(async () => {
+    try {
+      const res = await fetch(`http://localhost:3000/upload/delete-all-files`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      if (!res.ok) throw new Error("Failed to clear files");
+
+      // remove locally too
+      const removedIds: string[] = JSON.parse(
+        localStorage.getItem("removedPrintFiles") || "[]"
+      );
+
+      const closedIds = completedTabFiles.map((file) => file._id); // 👈 gather IDs
+
+      localStorage.setItem(
+        "removedPrintFiles",
+        JSON.stringify([...new Set([...removedIds, ...closedIds])])
+      );
+
+      setCompletedTabFiles([]);
+    } catch (error) {
+      console.error("Error clearing files:", error);
+    }
+  }, [completedTabFiles]);
   const fetchFiles = useCallback(async () => {
     try {
       const res = await fetch("http://localhost:3000/uploadableFiles-DB", {
@@ -126,54 +183,15 @@ const Dashboard = () => {
         ...filteredData.filter((file: FileOBJ2) => file.status === "pending"),
       ]);
       setCompletedTabFiles([
-        ...filteredData.filter((file: FileOBJ2) => file.status === "completed"),
+        ...filteredData.filter(
+          (file: FileOBJ2) =>
+            file.status === "completed" && file.deletedByUser === false
+        ),
       ]);
     } catch (error) {
       console.error("Error fetching files:", error);
     }
   }, [userID]);
-
-  const deleteCompletedFile = useCallback(
-    async (id: string, publicId: string) => {
-      try {
-        const res = await fetch(`http://localhost:3000/upload`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id, publicId }),
-        });
-        if (!res.ok) throw new Error("Failed to delete file");
-        setCompletedTabFiles((prev) => prev.filter((file) => file._id !== id));
-      } catch (error) {
-        console.error("Error deleting file:", error);
-      }
-    },
-    []
-  );
-
-  const deleteAllFiles = useCallback(
-    async (userId: string) => {
-      try {
-        const res = await fetch(
-          `http://localhost:3000/upload/delete-all-files`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ userId }),
-          }
-        );
-
-        if (!res.ok) throw new Error("Failed to delete file");
-        setCompletedTabFiles([]);
-      } catch (error) {
-        console.error("Error deleting file:", error);
-      }
-    },
-    [userID]
-  );
 
   const confirmUploads = () => {
     const newFilesData = pendingSelection.map((file) => ({
@@ -183,6 +201,7 @@ const Dashboard = () => {
       name: file.name,
       isBlackWhite: false,
       isColored: false,
+      deletedByUser: false,
       status: "pending",
       qty: 1,
       userId: userID!,
@@ -192,6 +211,9 @@ const Dashboard = () => {
 
     setPendingSelection([]);
     setPendingPreviewUrls([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   const handleUpload = useCallback(async () => {
@@ -239,7 +261,13 @@ const Dashboard = () => {
   useEffect(() => {
     if (!userID) return;
     fetchFiles();
-  }, [userID, fetchFiles, deleteCompletedFile, deleteAllFiles, handleUpload]);
+  }, [userID, fetchFiles, deleteSelectedFile, clearAllFiles, handleUpload]);
+
+  const handleCancel = (index: number) => {
+    const updatedFiles = [...uploadableFiles];
+    updatedFiles.splice(index, 1);
+    setUploadableFiles(updatedFiles);
+  };
 
   return (
     <div className="mx-auto bg-[#0b112d] w-[70%] h-full rounded-2xl p-8 shadow-lg border border-[#1b254b] my-30 px-20 flex flex-col gap-20 ">
@@ -320,12 +348,12 @@ const Dashboard = () => {
           </button>
         )}
       </div>
-      <div className="uploads py-10 px-10 w-full">
+      <div className="py-10 px-10 w-full">
         <div className="flex justify-between w-[95%] mx-auto">
           <div className="flex gap-4 mt-2">
             <button
               onClick={() => setSelectedTab("upload")}
-              className={`px-4 py-2 rounded-lg hover:!bg-gradient-to-r from-yellow-600 to-yellow-800 transition-all duration-200  ${
+              className={`px-4 py-2 rounded-lg hover:!bg-gradient-to-r from-yellow-600 to-yellow-800 transition-all duration-200 hover:!text-white ${
                 selectedTab === "upload"
                   ? "!border-yellow-400  text-yellow-400 !bg-transparent"
                   : "!border-gray-400 text-gray-300 !bg-transparent"
@@ -345,7 +373,7 @@ const Dashboard = () => {
             </button>
             <button
               onClick={() => setSelectedTab("completed")}
-              className={`px-4 py-2 rounded-lg hover:!bg-gradient-to-r from-green-500 to-green-800 transition-all duration-200 ${
+              className={`px-4 py-2 rounded-lg hover:!bg-gradient-to-r from-green-600 to-green-900 transition-all hover:!text-white duration-200 ${
                 selectedTab === "completed"
                   ? "!border-green-400 text-green-400 !bg-transparent"
                   : "!border-gray-400 text-gray-300 !bg-transparent"
@@ -421,7 +449,7 @@ const Dashboard = () => {
                         </div>
                       </div>
 
-                      <div className="w-1/3 flex justify-center">
+                      <div className="w-1/3 flex justify-center gap-4">
                         <div className="flex items-center border-2 border-yellow-400 rounded-md">
                           <button
                             className="px-3 py-1 text-lg font-bold text-white !bg-transparent hover:!bg-yellow-600/30 hover:!rounded-full "
@@ -439,6 +467,13 @@ const Dashboard = () => {
                             +
                           </button>
                         </div>
+                        <button
+                          className="flex items-center justify-center gap-2 px-3 py-1 !text-md font-bold text-white !bg-gray-600 hover:!bg-gray-700/30 "
+                          onClick={() => handleCancel(index)}
+                        >
+                          <X className="w-5 h-5" />
+                          Cancel
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -506,16 +541,14 @@ const Dashboard = () => {
                             Pending
                           </div>
                         ) : (
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <CircleCheckBig className="w-5 h-5 text-green-500" />
                             Completed
                             <button
-                              className="ml-2 !bg-blue-600 !p-2 hover:!bg-blue-800"
-                              onClick={() =>
-                                deleteCompletedFile(file._id, file.publicId)
-                              }
+                              className="flex items-center justify-center !text-white !bg-red-800 !py-2 rounded-lg hover:!bg-red-700/70"
+                              onClick={() => deleteSelectedFile(file._id)}
                             >
-                              Remove
+                              <Trash2 className="h-5 w-5 " />
                             </button>
                           </div>
                         )}
@@ -524,10 +557,10 @@ const Dashboard = () => {
                   ))}
                 </div>
               </div>
-              {selectedTab === "completed" && (
+              {selectedTab === "completed" && completedTabFiles.length > 0 && (
                 <button
                   className="!bg-blue-600 !p-2 hover:!bg-blue-800 "
-                  onClick={() => deleteAllFiles(userID!)}
+                  onClick={() => clearAllFiles()}
                 >
                   Clear all
                 </button>

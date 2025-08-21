@@ -13,6 +13,8 @@ import getPracticalFiles from "./routes/practicalFiles.route";
 import orderPracticalFilesRouter from "./routes/orderPracticalFIles.route";
 import logout from "./routes/logout.route";
 import adminRouter from "./routes/admin.route";
+import helpRouter from "./routes/help.route";
+import settingsRouter from "./routes/settings.route";
 connectDB();
 const PORT = process.env.PORT || 3000;
 
@@ -41,7 +43,8 @@ app.use("/practical-files", getPracticalFiles);
 app.use("/order-practical-files", orderPracticalFilesRouter);
 app.use("/logout", logout);
 app.use("/admin/order-practical-files", adminRouter);
-
+app.use("/help", helpRouter);
+app.use("/settings", settingsRouter);
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

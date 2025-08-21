@@ -11,6 +11,6 @@ const Router = express_1.default.Router();
 const upload = (0, multer_1.default)({ storage: multer_1.default.memoryStorage() });
 Router.route("/")
     .post(authMiddleware_1.authMiddleware, upload.array("files"), cloudinary_controller_1.uploadFilesToCloudinary)
-    .delete(cloudinary_controller_1.deleteCompletedFile);
-Router.route("/delete-all-files").delete(cloudinary_controller_1.deleteAllFiles);
+    .put(authMiddleware_1.authMiddleware, cloudinary_controller_1.deleteSelectedFile);
+Router.route("/delete-all-files").put(authMiddleware_1.authMiddleware, cloudinary_controller_1.clearAllFiles);
 exports.default = Router;

@@ -2,8 +2,8 @@ import express from "express";
 import multer from "multer";
 import {
   uploadFilesToCloudinary,
-  deleteCompletedFile,
-  deleteAllFiles,
+  deleteSelectedFile,
+  clearAllFiles,
 } from "../controller/cloudinary.controller";
 import { authMiddleware } from "../middleware/authMiddleware";
 const Router = express.Router();
@@ -11,8 +11,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 Router.route("/")
   .post(authMiddleware, upload.array("files"), uploadFilesToCloudinary)
-  .delete(deleteCompletedFile);
+  .put(authMiddleware, deleteSelectedFile);
 
-Router.route("/delete-all-files").delete(deleteAllFiles);
+Router.route("/delete-all-files").put(authMiddleware, clearAllFiles);
 
 export default Router;

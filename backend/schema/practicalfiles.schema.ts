@@ -14,7 +14,7 @@ const practicalFilesSchema = new mongoose.Schema(
       },
       required: true,
     },
-    branch: {
+    department: {
       type: String,
       required: true,
     },

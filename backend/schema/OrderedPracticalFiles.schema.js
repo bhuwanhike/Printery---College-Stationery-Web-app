@@ -24,6 +24,11 @@ const orderedPracticalFilesSchema = new mongoose_1.default.Schema({
         enum: ["pending", "completed"],
         default: "pending",
     },
+    deletedByUser: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
 }, { timestamps: true });
 const OrderedPracticalFiles = mongoose_1.default.model("OrderedPracticalFile", orderedPracticalFilesSchema);
 exports.default = OrderedPracticalFiles;

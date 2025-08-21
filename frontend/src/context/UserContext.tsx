@@ -6,6 +6,8 @@ interface UserContextType {
   setAdmissionNo: (no: string | null) => void;
   userID: string | null;
   setUserID: (id: string | null) => void;
+  fetchAdmissionNo: () => void;
+  clearUser: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -28,13 +30,25 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
     setUserID(meData.userId);
   };
 
+  const clearUser = () => {
+    setAdmissionNo(null);
+    setUserID(null);
+  };
+
   useEffect(() => {
     fetchAdmissionNo();
   }, []);
 
   return (
     <UserContext.Provider
-      value={{ admissionNo, setAdmissionNo, userID, setUserID }}
+      value={{
+        admissionNo,
+        setAdmissionNo,
+        userID,
+        setUserID,
+        fetchAdmissionNo,
+        clearUser,
+      }}
     >
       {children}
     </UserContext.Provider>

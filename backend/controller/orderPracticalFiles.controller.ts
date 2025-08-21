@@ -6,6 +6,19 @@ import PracticalFiles from "../schema/practicalfiles.schema";
 export interface AuthRequest extends Request {
   userId?: string;
 }
+type OrderedFileModel = {
+  _id: string;
+  ref_FileId: string;
+  name: string;
+  department: string;
+  year: number;
+  qty: number;
+  subject_code: string;
+  status: string;
+  deletedByUser: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
 
 const orderPracticalFilesController = async (
   req: AuthRequest,
@@ -29,18 +42,6 @@ const orderPracticalFilesController = async (
   }
 };
 
-type OrderedFileModel = {
-  ref_FileId: string;
-  name: string;
-  branch: string;
-  year: number;
-  qty: number;
-  subject_code: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
 const getOrderedPracticalFilesController = async (
   req: AuthRequest,
   res: Response
@@ -54,13 +55,15 @@ const getOrderedPracticalFilesController = async (
         _id: file.ref_FileId,
       });
       finalOrders.push({
+        _id: file._id.toString(),
         ref_FileId: file.ref_FileId.toString(),
         name: practicalFile!.name,
-        branch: practicalFile!.branch,
+        department: practicalFile!.department,
         year: practicalFile!.year,
         subject_code: practicalFile!.subject_code,
         qty: file.qty,
         status: file.status,
+        deletedByUser: file.deletedByUser,
         createdAt: file.createdAt.toISOString(),
         updatedAt: file.updatedAt.toISOString(),
       });
@@ -73,27 +76,44 @@ const getOrderedPracticalFilesController = async (
   }
 };
 
-const changeFileStatus = async (req: AuthRequest, res: Response) => {
+const deleteSelectedOrderController = async (req: Request, res: Response) => {
   try {
-    const userId = req.userId;
-    const { ref_FileId } = req.body;
-    const updatedOrder = await OrderedPracticalFiles.findOneAndUpdate(
-      { ref_FileId: ref_FileId, userId },
-      { status: "completed" },
-      { new: true }
+    const { id } = req.params;
+    const deletedOrder = await OrderedPracticalFiles.findByIdAndUpdate(
+      { _id: id },
+      {
+        deletedByUser: true,
+      }
     );
-    if (!updatedOrder) {
-      return res.status(404).json({ error: "Order not found" });
-    }
-    res.status(200).json({ updatedOrder });
+    res.status(200).json({ deletedOrder });
   } catch (error) {
-    console.error("Error changing file status:", error);
-    res.status(500).json({ error: "Failed to change file status" });
+    console.error("Error deleting order:", error);
+    res.status(500).json({ error: "Failed to delete order" });
+  }
+};
+
+const clearAllOrderedFilesController = async (
+  req: AuthRequest,
+  res: Response
+) => {
+  try {
+    const { ids } = req.body;
+    await OrderedPracticalFiles.updateMany(
+      { _id: { $in: ids } },
+      { $set: { deletedByUser: true } }
+    );
+    res
+      .status(200)
+      .json({ success: true, message: "Orders cleared successfully" });
+  } catch (error) {
+    console.error("Error clearing orders:", error);
+    res.status(500).json({ error: "Failed to clear orders" });
   }
 };
 
 export {
   orderPracticalFilesController,
   getOrderedPracticalFilesController,
-  changeFileStatus,
+  deleteSelectedOrderController,
+  clearAllOrderedFilesController,
 };

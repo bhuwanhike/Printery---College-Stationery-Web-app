@@ -76,6 +76,9 @@ export default function Signup() {
         }, 1000);
       } else {
         setShowUserAlreadyExists(true);
+        setTimeout(() => {
+          setShowUserAlreadyExists(false);
+        }, 2000);
       }
     } catch (error) {
       console.error("Error registering user:", error);

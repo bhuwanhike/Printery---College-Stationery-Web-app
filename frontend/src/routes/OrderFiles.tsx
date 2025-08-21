@@ -11,7 +11,7 @@ type practicalFile = {
   _id: string;
   name: string;
   year: number;
-  branch: string;
+  department: string;
   subject_code: string;
 };
 
@@ -51,7 +51,7 @@ const SemesterFileContent = ({
 
     const matchesDepartment =
       searchDepartment === "" ||
-      file.branch.toLowerCase().includes(searchDepartment.toLowerCase());
+      file.department.toLowerCase().includes(searchDepartment.toLowerCase());
 
     const matchesCode =
       searchCode === "" ||
@@ -96,6 +96,11 @@ const SemesterFileContent = ({
     if (!userID) return;
     fetchPracticalFiles();
   }, [userID]);
+  useEffect(() => {
+    if (userID) {
+      fetchPracticalFiles();
+    }
+  }, []);
 
   const handleQtyChange = (ref_FileId: string, newValue: number) => {
     if (newValue < 1) return;
@@ -116,6 +121,7 @@ const SemesterFileContent = ({
   const [isProcessing, setIsProcessing] = useState<string[]>([]);
 
   const [showToast, setShowToast] = useState<string[]>([]);
+
   const placeOrder = (fileId: string) => {
     // Add this file to processing list
     setIsProcessing((prev) => [...prev, fileId]);
@@ -142,7 +148,6 @@ const SemesterFileContent = ({
         });
       }
 
-      // Remove only this fileId from processing
       setIsProcessing((prev) => prev.filter((id) => id !== fileId));
     }, 2000);
     setTimeout(() => {
@@ -235,7 +240,7 @@ const SemesterFileContent = ({
                 </div>
 
                 <div className="w-1/4 flex items-center gap-4  justify-center ">
-                  {file.branch}
+                  {file.department}
                 </div>
 
                 <div className="w-2/4 flex justify-center items-center">
@@ -277,6 +282,7 @@ const SemesterFileContent = ({
                         : "!bg-blue-600"
                     }`}
                     onClick={() => placeOrder(file._id)}
+                    disabled={isProcessing.includes(file._id)}
                   >
                     {isProcessing.includes(file._id)
                       ? "Processing..."
@@ -292,14 +298,16 @@ const SemesterFileContent = ({
             ))}
         </div>
       </div>
-      <button
-        className={`px-3 py-1 !text-lg !font-bold !text-white !bg-blue-600 hover:!bg-blue-600/30  ${
-          placeOrderFiles.length > 0 ? "block" : "hidden"
-        }`}
-        onClick={confirmAndUpload}
-      >
-        Confirm and Pay
-      </button>
+      {placeOrderFiles.length > 0 && isProcessing.length === 0 && (
+        <button
+          className={`px-3 py-1 !text-lg !font-bold !text-white !bg-blue-600 hover:!bg-blue-600/30  ${
+            placeOrderFiles.length > 0 ? "block" : "hidden"
+          }`}
+          onClick={confirmAndUpload}
+        >
+          Confirm and Pay
+        </button>
+      )}
     </div>
   );
 };

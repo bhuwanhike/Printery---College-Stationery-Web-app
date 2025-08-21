@@ -27,6 +27,11 @@ const uploadFilesSchema = new mongoose_1.default.Schema({
         required: true,
     },
     hash: { type: String, required: true },
+    deletedByUser: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
     status: {
         type: String,
         enum: ["pending", "completed"],

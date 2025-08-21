@@ -34,20 +34,4 @@ const getFilesFromDB = async (req: Request, res: Response) => {
   }
 };
 
-const changeStatus = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const file = await UploadFiles.findById(id);
-    if (!file) {
-      return res.status(404).json({ error: "File not found" });
-    }
-    file.status = "completed";
-    await file.save();
-    res.status(200).json(file);
-  } catch (error) {
-    console.error("Error changing file status:", error);
-    res.status(500).json({ error: "Failed to change file status" });
-  }
-};
-
-export { uploadFilesToDB, getFilesFromDB, changeStatus };
+export { uploadFilesToDB, getFilesFromDB };

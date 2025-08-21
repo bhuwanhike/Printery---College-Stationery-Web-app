@@ -10,6 +10,7 @@ import Orderfiles from "./routes/OrderFiles";
 import ErrorPage from "./routes/ErrorPage";
 import YourOrders from "./routes/YourOrders";
 import Help from "./routes/Help";
+import Account from "./routes/Account";
 function App() {
   const location = useLocation();
   const hideNavbar = ["/login", "/sign-up", "/admin/dashboard"].includes(
@@ -26,6 +27,7 @@ function App() {
         <Route path="/order-files" element={<Orderfiles />} />
         <Route path="/your-orders" element={<YourOrders />} />
         <Route path="/help" element={<Help />} />
+        <Route path="/account" element={<Account />} />
 
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="*" element={<ErrorPage />} />

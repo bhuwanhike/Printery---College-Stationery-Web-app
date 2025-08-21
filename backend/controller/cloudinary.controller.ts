@@ -5,6 +5,7 @@ import crypto from "crypto";
 import dotenv from "dotenv";
 import { Request, Response } from "express";
 import UploadFiles from "../schema/uploadableFiles.schema";
+import { AuthRequest } from "../middleware/authMiddleware";
 
 dotenv.config();
 
@@ -82,32 +83,49 @@ const uploadFilesToCloudinary = async (req: Request, res: Response) => {
       const fileHash = generateFileHash(file.buffer);
       const status = statusArr[i];
 
-      // Check if already uploaded for this user
       const existing = await UploadFiles.findOne({ userId, hash: fileHash });
+
       if (existing) {
-        console.log(`Duplicate skipped: ${file.originalname}`);
-        newFileUrls.push(existing.url); // return already stored URL
+        if (existing.status === "pending") {
+          existing.qty += qty;
+          await existing.save();
+        } else {
+          await UploadFiles.create({
+            userId,
+            hash: fileHash,
+            url: existing.url,
+            filename: existing.filename,
+            isColored,
+            qty,
+            status,
+            publicId: existing.publicId,
+          });
+        }
+
+        console.log(`Duplicate avoided: ${file.originalname}`);
+        newFileUrls.push(existing.url);
+        publicIds.push(existing.publicId);
         continue;
       }
-
-      // Upload to Cloudinary
       const uploadResult = await uploadToCloudinary(file, admissionNo);
+      const secureUrl = uploadResult.secure_url;
+      const public_id = uploadResult.public_id;
 
-      // Save immediately to Mongo with hash
       const uploadedFile = await UploadFiles.create({
         userId,
         hash: fileHash,
-        url: uploadResult.secure_url,
+        url: secureUrl,
         filename: file.originalname,
         isColored,
         qty,
         status,
-        publicId: uploadResult.public_id,
+        publicId: public_id,
       });
 
-      newFileUrls.push(uploadResult.secure_url);
-      publicIds.push(uploadResult.public_id);
+      newFileUrls.push(secureUrl);
+      publicIds.push(public_id);
     }
+
     const allFiles = await UploadFiles.find({ userId });
 
     res.json({
@@ -122,15 +140,12 @@ const uploadFilesToCloudinary = async (req: Request, res: Response) => {
   }
 };
 
-const deleteCompletedFile = async (req: Request, res: Response) => {
-  const { id, publicId } = req.body;
+const deleteSelectedFile = async (req: Request, res: Response) => {
+  const { _id } = req.body;
   try {
-    if (!publicId) {
-      return res.status(400).json({ error: "Invalid publicId" });
-    }
-    const result = await cloudinary.v2.api.delete_resources(publicId);
-
-    const file = await UploadFiles.findByIdAndDelete(id);
+    const file = await UploadFiles.findByIdAndUpdate(_id, {
+      deletedByUser: true,
+    });
     if (!file) {
       return res.status(404).json({ error: "File not found" });
     }
@@ -141,25 +156,23 @@ const deleteCompletedFile = async (req: Request, res: Response) => {
   }
 };
 
-const deleteAllFiles = async (req: Request, res: Response) => {
+const clearAllFiles = async (req: AuthRequest, res: Response) => {
   try {
-    const { userId } = req.body;
-    console.log(userId);
-    const publicIds = await UploadFiles.find({ userId, status: "completed" });
-    console.log(publicIds.map((file) => file.publicId));
-    const result = await cloudinary.v2.api.delete_resources(
-      publicIds.map((file) => file.publicId)
+    const userId = req.userId;
+
+    await UploadFiles.updateMany(
+      { userId, status: "completed" },
+      { $set: { deletedByUser: true } }
     );
 
-    const files = await UploadFiles.deleteMany({
-      userId,
-      status: "completed",
+    res.json({
+      success: true,
+      message: "All completed files marked as deleted",
     });
-    res.status(200).json(files);
   } catch (error) {
-    console.error("Delete error:", error);
-    res.status(500).json({ error: "Delete failed" });
+    console.error("Error marking files deleted:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 };
 
-export { uploadFilesToCloudinary, deleteCompletedFile, deleteAllFiles };
+export { uploadFilesToCloudinary, deleteSelectedFile, clearAllFiles };

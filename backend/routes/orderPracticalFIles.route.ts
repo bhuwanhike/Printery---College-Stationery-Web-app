@@ -2,16 +2,17 @@ import { Router } from "express";
 import {
   orderPracticalFilesController,
   getOrderedPracticalFilesController,
+  deleteSelectedOrderController,
+  clearAllOrderedFilesController,
 } from "../controller/orderPracticalFiles.controller";
-import { changeFileStatus } from "../controller/orderPracticalFiles.controller";
+
 import { authMiddleware } from "../middleware/authMiddleware";
-import adminMiddleware from "../middleware/isAdmin";
 const router = Router();
 
 router
   .route("/")
   .post(authMiddleware, orderPracticalFilesController)
-  .get(authMiddleware, getOrderedPracticalFilesController)
-  .put(authMiddleware, adminMiddleware, changeFileStatus);
-
+  .get(authMiddleware, getOrderedPracticalFilesController);
+router.route("/deleteAll").put(authMiddleware, clearAllOrderedFilesController);
+router.route("/:id").put(authMiddleware, deleteSelectedOrderController);
 export default router;

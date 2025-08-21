@@ -7,6 +7,7 @@ export interface IFile extends Document {
   isColored: boolean;
   qty: number;
   hash: string;
+  deletedByUser: boolean;
   status: string;
   publicId: string;
 }
@@ -36,6 +37,12 @@ const uploadFilesSchema = new mongoose.Schema<IFile>(
       required: true,
     },
     hash: { type: String, required: true },
+
+    deletedByUser: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
 
     status: {
       type: String,

@@ -75,6 +75,7 @@ export default function Login() {
 
       setUserLoggedIn(true);
       setUserNotFound(false);
+      // console.log(res);
 
       setTimeout(() => {
         if (res.isAdmin) {

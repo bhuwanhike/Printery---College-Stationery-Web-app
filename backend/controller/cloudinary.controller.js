@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAllFiles = exports.deleteCompletedFile = exports.uploadFilesToCloudinary = void 0;
+exports.clearAllFiles = exports.deleteSelectedFile = exports.uploadFilesToCloudinary = void 0;
 // upload.controller.ts
 const cloudinary_1 = __importDefault(require("cloudinary"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -69,28 +69,44 @@ const uploadFilesToCloudinary = (req, res) => __awaiter(void 0, void 0, void 0, 
             const qty = parseInt(qtyArr[i], 10);
             const fileHash = generateFileHash(file.buffer);
             const status = statusArr[i];
-            // Check if already uploaded for this user
             const existing = yield uploadableFiles_schema_1.default.findOne({ userId, hash: fileHash });
             if (existing) {
-                console.log(`Duplicate skipped: ${file.originalname}`);
-                newFileUrls.push(existing.url); // return already stored URL
+                if (existing.status === "pending") {
+                    existing.qty += qty;
+                    yield existing.save();
+                }
+                else {
+                    yield uploadableFiles_schema_1.default.create({
+                        userId,
+                        hash: fileHash,
+                        url: existing.url,
+                        filename: existing.filename,
+                        isColored,
+                        qty,
+                        status,
+                        publicId: existing.publicId,
+                    });
+                }
+                console.log(`Duplicate avoided: ${file.originalname}`);
+                newFileUrls.push(existing.url);
+                publicIds.push(existing.publicId);
                 continue;
             }
-            // Upload to Cloudinary
             const uploadResult = yield uploadToCloudinary(file, admissionNo);
-            // Save immediately to Mongo with hash
+            const secureUrl = uploadResult.secure_url;
+            const public_id = uploadResult.public_id;
             const uploadedFile = yield uploadableFiles_schema_1.default.create({
                 userId,
                 hash: fileHash,
-                url: uploadResult.secure_url,
+                url: secureUrl,
                 filename: file.originalname,
                 isColored,
                 qty,
                 status,
-                publicId: uploadResult.public_id,
+                publicId: public_id,
             });
-            newFileUrls.push(uploadResult.secure_url);
-            publicIds.push(uploadResult.public_id);
+            newFileUrls.push(secureUrl);
+            publicIds.push(public_id);
         }
         const allFiles = yield uploadableFiles_schema_1.default.find({ userId });
         res.json({
@@ -106,14 +122,12 @@ const uploadFilesToCloudinary = (req, res) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.uploadFilesToCloudinary = uploadFilesToCloudinary;
-const deleteCompletedFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, publicId } = req.body;
+const deleteSelectedFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { _id } = req.body;
     try {
-        if (!publicId) {
-            return res.status(400).json({ error: "Invalid publicId" });
-        }
-        const result = yield cloudinary_1.default.v2.api.delete_resources(publicId);
-        const file = yield uploadableFiles_schema_1.default.findByIdAndDelete(id);
+        const file = yield uploadableFiles_schema_1.default.findByIdAndUpdate(_id, {
+            deletedByUser: true,
+        });
         if (!file) {
             return res.status(404).json({ error: "File not found" });
         }
@@ -124,23 +138,19 @@ const deleteCompletedFile = (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(500).json({ error: "Delete failed" });
     }
 });
-exports.deleteCompletedFile = deleteCompletedFile;
-const deleteAllFiles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.deleteSelectedFile = deleteSelectedFile;
+const clearAllFiles = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { userId } = req.body;
-        console.log(userId);
-        const publicIds = yield uploadableFiles_schema_1.default.find({ userId, status: "completed" });
-        console.log(publicIds.map((file) => file.publicId));
-        const result = yield cloudinary_1.default.v2.api.delete_resources(publicIds.map((file) => file.publicId));
-        const files = yield uploadableFiles_schema_1.default.deleteMany({
-            userId,
-            status: "completed",
+        const userId = req.userId;
+        yield uploadableFiles_schema_1.default.updateMany({ userId, status: "completed" }, { $set: { deletedByUser: true } });
+        res.json({
+            success: true,
+            message: "All completed files marked as deleted",
         });
-        res.status(200).json(files);
     }
     catch (error) {
-        console.error("Delete error:", error);
-        res.status(500).json({ error: "Delete failed" });
+        console.error("Error marking files deleted:", error);
+        res.status(500).json({ success: false, error: "Internal Server Error" });
     }
 });
-exports.deleteAllFiles = deleteAllFiles;
+exports.clearAllFiles = clearAllFiles;

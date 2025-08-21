@@ -6,7 +6,7 @@ const SignUpController = async (req: Request, res: Response) => {
   try {
     const { admissionNo, department, year, password } = req.body;
 
-    const existingUser = await SignUp.findOne({ admissionNo });
+    const existingUser = await SignUp.findOne({ admissionNo: admissionNo });
     if (existingUser) {
       return res.status(409).json({ message: "User already exists" });
     }
@@ -51,7 +51,7 @@ const LoginController = async (req: Request, res: Response) => {
         .status(200)
         .json({ message: "Login successful", isAdmin: true });
     } else {
-      const existingUser = await SignUp.findOne({ admissionNo });
+      const existingUser = await SignUp.findOne({ admissionNo: admissionNo });
       if (!existingUser) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -71,7 +71,9 @@ const LoginController = async (req: Request, res: Response) => {
         expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       });
 
-      return res.status(200).json({ message: "Login successful" });
+      return res
+        .status(200)
+        .json({ message: "Login successful", isAdmin: false });
     }
   } catch (error) {
     console.error("Error logging in:", error);
@@ -102,7 +104,9 @@ const getJWTdecode = (req: Request, res: Response) => {
 
 const fetchUsers = async (req: Request, res: Response) => {
   try {
-    const users = await SignUp.find().select("-password");
+    const users = await SignUp.find()
+      .select("-password")
+      .where({ isAdmin: false });
     res.status(200).json({ message: "Users fetched successfully", users });
   } catch (error) {
     console.error("Error fetching users:", error);

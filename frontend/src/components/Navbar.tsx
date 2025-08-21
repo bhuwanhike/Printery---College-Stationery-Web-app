@@ -1,5 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
+import { SettingsIcon } from "lucide-react";
 import logo from "../assets/svlogo.svg";
+import DropDown from "./DropDown";
 const Navbar = () => {
   return (
     // <div className="flex justify-center pt-15 sticky top-0  items-center mx-auto gap-12 opacity-80 z-200">
@@ -85,13 +87,7 @@ const Navbar = () => {
           </span>
         </NavLink>
       </div>
-
-      <Link
-        to="/"
-        className="flex justify-center items-center border  rounded-full p-4 w-16 h-16 text-xl"
-      >
-        A
-      </Link>
+      <DropDown />
     </div>
     // </div>
   );

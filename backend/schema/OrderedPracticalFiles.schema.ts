@@ -21,6 +21,11 @@ const orderedPracticalFilesSchema = new mongoose.Schema(
       enum: ["pending", "completed"],
       default: "pending",
     },
+    deletedByUser: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
   },
   { timestamps: true }
 );

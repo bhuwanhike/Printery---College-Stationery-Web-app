@@ -17,6 +17,8 @@ const practicalFiles_route_1 = __importDefault(require("./routes/practicalFiles.
 const orderPracticalFIles_route_1 = __importDefault(require("./routes/orderPracticalFIles.route"));
 const logout_route_1 = __importDefault(require("./routes/logout.route"));
 const admin_route_1 = __importDefault(require("./routes/admin.route"));
+const help_route_1 = __importDefault(require("./routes/help.route"));
+const settings_route_1 = __importDefault(require("./routes/settings.route"));
 (0, db_1.default)();
 const PORT = process.env.PORT || 3000;
 const app = (0, express_1.default)();
@@ -40,6 +42,8 @@ app.use("/practical-files", practicalFiles_route_1.default);
 app.use("/order-practical-files", orderPracticalFIles_route_1.default);
 app.use("/logout", logout_route_1.default);
 app.use("/admin/order-practical-files", admin_route_1.default);
+app.use("/help", help_route_1.default);
+app.use("/settings", settings_route_1.default);
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

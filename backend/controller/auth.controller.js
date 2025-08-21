@@ -18,7 +18,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const SignUpController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { admissionNo, department, year, password } = req.body;
-        const existingUser = yield sign_up_schema_1.default.findOne({ admissionNo });
+        const existingUser = yield sign_up_schema_1.default.findOne({ admissionNo: admissionNo });
         if (existingUser) {
             return res.status(409).json({ message: "User already exists" });
         }
@@ -64,7 +64,7 @@ const LoginController = (req, res) => __awaiter(void 0, void 0, void 0, function
                 .json({ message: "Login successful", isAdmin: true });
         }
         else {
-            const existingUser = yield sign_up_schema_1.default.findOne({ admissionNo });
+            const existingUser = yield sign_up_schema_1.default.findOne({ admissionNo: admissionNo });
             if (!existingUser) {
                 return res.status(404).json({ message: "User not found" });
             }
@@ -80,7 +80,9 @@ const LoginController = (req, res) => __awaiter(void 0, void 0, void 0, function
                 path: "/",
                 expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
             });
-            return res.status(200).json({ message: "Login successful" });
+            return res
+                .status(200)
+                .json({ message: "Login successful", isAdmin: false });
         }
     }
     catch (error) {
@@ -108,7 +110,9 @@ const getJWTdecode = (req, res) => {
 exports.getJWTdecode = getJWTdecode;
 const fetchUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const users = yield sign_up_schema_1.default.find().select("-password");
+        const users = yield sign_up_schema_1.default.find()
+            .select("-password")
+            .where({ isAdmin: false });
         res.status(200).json({ message: "Users fetched successfully", users });
     }
     catch (error) {

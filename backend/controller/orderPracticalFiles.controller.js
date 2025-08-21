@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.changeFileStatus = exports.getOrderedPracticalFilesController = exports.orderPracticalFilesController = void 0;
+exports.clearAllOrderedFilesController = exports.deleteSelectedOrderController = exports.getOrderedPracticalFilesController = exports.orderPracticalFilesController = void 0;
 const OrderedPracticalFiles_schema_1 = __importDefault(require("../schema/OrderedPracticalFiles.schema"));
 const practicalfiles_schema_1 = __importDefault(require("../schema/practicalfiles.schema"));
 const orderPracticalFilesController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -44,13 +44,15 @@ const getOrderedPracticalFilesController = (req, res) => __awaiter(void 0, void 
                 _id: file.ref_FileId,
             });
             finalOrders.push({
+                _id: file._id.toString(),
                 ref_FileId: file.ref_FileId.toString(),
                 name: practicalFile.name,
-                branch: practicalFile.branch,
+                department: practicalFile.department,
                 year: practicalFile.year,
                 subject_code: practicalFile.subject_code,
                 qty: file.qty,
                 status: file.status,
+                deletedByUser: file.deletedByUser,
                 createdAt: file.createdAt.toISOString(),
                 updatedAt: file.updatedAt.toISOString(),
             });
@@ -63,19 +65,31 @@ const getOrderedPracticalFilesController = (req, res) => __awaiter(void 0, void 
     }
 });
 exports.getOrderedPracticalFilesController = getOrderedPracticalFilesController;
-const changeFileStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteSelectedOrderController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const userId = req.userId;
-        const { ref_FileId } = req.body;
-        const updatedOrder = yield OrderedPracticalFiles_schema_1.default.findOneAndUpdate({ ref_FileId: ref_FileId, userId }, { status: "completed" }, { new: true });
-        if (!updatedOrder) {
-            return res.status(404).json({ error: "Order not found" });
-        }
-        res.status(200).json({ updatedOrder });
+        const { id } = req.params;
+        const deletedOrder = yield OrderedPracticalFiles_schema_1.default.findByIdAndUpdate({ _id: id }, {
+            deletedByUser: true,
+        });
+        res.status(200).json({ deletedOrder });
     }
     catch (error) {
-        console.error("Error changing file status:", error);
-        res.status(500).json({ error: "Failed to change file status" });
+        console.error("Error deleting order:", error);
+        res.status(500).json({ error: "Failed to delete order" });
     }
 });
-exports.changeFileStatus = changeFileStatus;
+exports.deleteSelectedOrderController = deleteSelectedOrderController;
+const clearAllOrderedFilesController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { ids } = req.body;
+        yield OrderedPracticalFiles_schema_1.default.updateMany({ _id: { $in: ids } }, { $set: { deletedByUser: true } });
+        res
+            .status(200)
+            .json({ success: true, message: "Orders cleared successfully" });
+    }
+    catch (error) {
+        console.error("Error clearing orders:", error);
+        res.status(500).json({ error: "Failed to clear orders" });
+    }
+});
+exports.clearAllOrderedFilesController = clearAllOrderedFilesController;
