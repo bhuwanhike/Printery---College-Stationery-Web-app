@@ -20,7 +20,7 @@ const YourOrders = () => {
   const [orderedFiles, setOrderedFiles] = useState<orderedFile[]>([]);
   const getOrderedFiles = async () => {
     try {
-      const res = await fetch("http://localhost:3000/order-practical-files", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/order-practical-files`, {
         method: "GET",
         credentials: "include",
       });
@@ -50,7 +50,7 @@ const YourOrders = () => {
   };
   const deleteSelectedOrder = useCallback(async (_id: string) => {
     try {
-      await fetch(`http://localhost:3000/order-practical-files/${_id}`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/order-practical-files/${_id}`, {
         method: "PUT",
         credentials: "include",
       });
@@ -82,7 +82,7 @@ const YourOrders = () => {
 
       if (completedIds.length > 0) {
         // send all completed IDs to backend in one request
-        fetch("http://localhost:3000/order-practical-files/deleteAll", {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/order-practical-files/deleteAll`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

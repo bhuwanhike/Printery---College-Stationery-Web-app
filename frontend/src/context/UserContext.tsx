@@ -18,7 +18,7 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
   const [userID, setUserID] = useState<string | null>(null);
 
   const fetchAdmissionNo = async () => {
-    const meRes = await fetch("http://localhost:3000/auth/me", {
+    const meRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, {
       method: "GET",
       credentials: "include",
     });

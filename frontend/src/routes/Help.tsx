@@ -6,7 +6,7 @@ import {
   Trash2,
   XIcon,
 } from "lucide-react";
-import PrinteryButton from "../components/PrinteryButton";
+
 import { useUser } from "../context/useUser";
 
 type HelpModel = {
@@ -87,7 +87,7 @@ const Help = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const { admissionNo, email, query } = formData;
-    const sendHelp = await fetch("http://localhost:3000/help", {
+    const sendHelp = await fetch(`${import.meta.env.VITE_BACKEND_URL}/help`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -107,7 +107,7 @@ const Help = () => {
   const [allTicketsClosed, setAllTicketsClosed] = useState(false);
 
   const fetchTickets = useCallback(async () => {
-    const response = await fetch("http://localhost:3000/help", {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/help`, {
       method: "GET",
       credentials: "include",
     });
@@ -148,7 +148,7 @@ const Help = () => {
 
   const removeTicket = useCallback(async (_id: string) => {
     try {
-      const markDeleteTrue = await fetch("http://localhost:3000/help", {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/help`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -182,7 +182,7 @@ const Help = () => {
 
       if (closedIds.length > 0) {
         // send all closed IDs to backend in one request
-        fetch("http://localhost:3000/help/deleteAllQueries", {
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/help/deleteAllQueries`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

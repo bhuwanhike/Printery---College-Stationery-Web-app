@@ -110,7 +110,7 @@ const Dashboard = () => {
 
   const deleteSelectedFile = useCallback(async (_id: string) => {
     try {
-      await fetch(`http://localhost:3000/upload`, {
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/upload`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +137,7 @@ const Dashboard = () => {
 
   const clearAllFiles = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:3000/upload/delete-all-files`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/upload/delete-all-files`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -166,7 +166,7 @@ const Dashboard = () => {
   }, [completedTabFiles]);
   const fetchFiles = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:3000/uploadableFiles-DB", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/uploadableFiles-DB`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -237,7 +237,7 @@ const Dashboard = () => {
       formData.append("name", file.name);
     });
 
-    const response = await fetch("http://localhost:3000/upload", {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/upload`, {
       method: "POST",
       credentials: "include",
       body: formData,

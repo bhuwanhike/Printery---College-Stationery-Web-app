@@ -35,7 +35,7 @@ const Account: React.FC = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/settings/${userID}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/settings/${userID}`, {
         method: "GET",
         credentials: "include",
       });
@@ -76,7 +76,7 @@ const Account: React.FC = () => {
 
   const handleSaveProfile = async () => {
     // API call to update user profile
-    const res = await fetch(`http://localhost:3000/settings/${userID}`, {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/settings/${userID}`, {
       method: "PUT",
       credentials: "include",
       headers: {
@@ -106,8 +106,8 @@ const Account: React.FC = () => {
       return;
     }
     // API call to change password
-    const res = await fetch(
-      `http://localhost:3000/settings/change-password/${userID}`,
+    await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/settings/change-password/${userID}`,
       {
         method: "PUT",
         credentials: "include",
@@ -128,7 +128,7 @@ const Account: React.FC = () => {
 
   const handleDeleteAccount = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/settings/${userID}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/settings/${userID}`, {
         method: "DELETE",
         credentials: "include",
       });

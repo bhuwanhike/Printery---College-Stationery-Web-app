@@ -60,7 +60,7 @@ export default function Signup() {
   ) => {
     e.preventDefault();
     try {
-      const signupData = await fetch("http://localhost:3000/auth/sign-up", {
+      const signupData = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`, {
         method: "POST",
         credentials: "include",
         headers: {

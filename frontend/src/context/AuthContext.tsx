@@ -11,7 +11,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { clearUser } = useUser();
   const logout = async () => {
-    await fetch("http://localhost:3000/logout", {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/logout`, {
       method: "POST",
       credentials: "include",
     });

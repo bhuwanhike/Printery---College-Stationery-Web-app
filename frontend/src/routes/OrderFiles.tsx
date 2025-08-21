@@ -22,13 +22,7 @@ type orderedFile = {
   status: string;
 };
 
-const SemesterFileContent = ({
-  activeCard,
-  setActiveCard,
-}: {
-  activeCard: number | null;
-  setActiveCard: React.Dispatch<React.SetStateAction<number | null>>;
-}) => {
+const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
   const { userID } = useUser();
   const [practicalFiles, setPracticalFiles] = useState<practicalFile[]>([]);
 
@@ -62,13 +56,16 @@ const SemesterFileContent = ({
 
   const fetchPracticalFiles = async () => {
     try {
-      const res = await fetch("http://localhost:3000/practical-files", {
-        method: "GET",
-        // credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/practical-files`,
+        {
+          method: "GET",
+          // credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await res.json();
       setPracticalFiles(data);
 
@@ -162,7 +159,7 @@ const SemesterFileContent = ({
     const fileData = new FormData();
     fileData.append("files", JSON.stringify(placeOrderFiles));
     // const sendOrder =
-    await fetch("http://localhost:3000/order-practical-files", {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/order-practical-files`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -379,7 +376,6 @@ const Orderfiles = () => {
         {activeCard !== null && (
           <SemesterFileContent
             activeCard={activeCard}
-            setActiveCard={setActiveCard}
           />
         )}
       </div>

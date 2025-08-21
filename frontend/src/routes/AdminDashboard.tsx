@@ -15,7 +15,7 @@ import {
 
 import logo from "../assets/svlogo.svg";
 import pdfIcon from "../assets/pdf-icon.png";
-import { NavLink, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -123,7 +123,7 @@ const MainContent = ({
 
   const fetchUsers = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:3000/auth/sign-up", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -156,7 +156,7 @@ const MainContent = ({
 
   const fetchPrintouts = useCallback(async () => {
     try {
-      const res = await fetch("http://localhost:3000/uploadableFiles-DB", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/uploadableFiles-DB`, {
         method: "GET",
         credentials: "include",
         headers: {
@@ -207,7 +207,7 @@ const MainContent = ({
   const getOrderedFiles = useCallback(async () => {
     try {
       const res = await fetch(
-        "http://localhost:3000/admin/order-practical-files",
+        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files`,
         {
           method: "GET",
           credentials: "include",
@@ -247,7 +247,7 @@ const MainContent = ({
   const getTickets = useCallback(async (userList: User[]) => {
     try {
       const res = await fetch(
-        "http://localhost:3000/admin/order-practical-files/tickets",
+        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/tickets`,
         {
           method: "GET",
           credentials: "include",
@@ -298,8 +298,8 @@ const MainContent = ({
   const changeQueryStatus = useCallback(
     async (_id: string) => {
       // Removed usersList from here
-      const response = await fetch(
-        "http://localhost:3000/admin/order-practical-files/tickets",
+      await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/tickets`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -342,7 +342,7 @@ const MainContent = ({
   const changePrintoutStatus = async (id: string) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/admin/order-practical-files/changePrintoutStatus/${id}`,
+        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/changePrintoutStatus/${id}`,
         {
           method: "PUT",
           credentials: "include",
@@ -370,7 +370,7 @@ const MainContent = ({
   ) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/admin/order-practical-files/changeFileStatus`,
+        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/changeFileStatus`,
         {
           method: "PUT",
           credentials: "include",
@@ -589,7 +589,7 @@ const MainContent = ({
   ) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/admin/order-practical-files/`,
+        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/`,
         {
           method: "DELETE",
           credentials: "include",
@@ -608,9 +608,9 @@ const MainContent = ({
 
   const clearAllPrintouts = useCallback(async (userId?: string | null) => {
     const url = userId
-      ? `http://localhost:3000/admin/order-practical-files/printouts?userId=${userId}`
-      : `http://localhost:3000/admin/order-practical-files/printouts`;
-    const response = await fetch(url, {
+      ? `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/printouts?userId=${userId}`
+      : `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/printouts`;
+    await fetch(url, {
       method: "DELETE",
       credentials: "include",
     });
@@ -623,7 +623,7 @@ const MainContent = ({
   const deleteSelectedOrderedFile = useCallback(async (id: string) => {
     try {
       const res = await fetch(
-        `http://localhost:3000/admin/order-practical-files/orderedFiles/delete-selected`,
+        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/orderedFiles/delete-selected`,
         {
           method: "DELETE",
           credentials: "include",
@@ -642,8 +642,8 @@ const MainContent = ({
 
   const clearAllOrderedFiles = useCallback(async (userId?: string | null) => {
     const url = userId
-      ? `http://localhost:3000/admin/order-practical-files/orderedFiles/delete-all/?userId=${userId}`
-      : `http://localhost:3000/admin/order-practical-files/orderedFiles/delete-all`;
+      ? `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/orderedFiles/delete-all/?userId=${userId}`
+      : `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/orderedFiles/delete-all`;
     await fetch(url, {
       method: "DELETE",
       credentials: "include",
@@ -656,7 +656,7 @@ const MainContent = ({
 
   const removeTicket = useCallback(async (_id: string) => {
     const response = await fetch(
-      `http://localhost:3000/admin/order-practical-files/tickets/${_id}`,
+      `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/tickets/${_id}`,
       {
         method: "DELETE",
         credentials: "include",
@@ -669,7 +669,7 @@ const MainContent = ({
 
   const clearAllTickets = useCallback(async () => {
     const response = await fetch(
-      `http://localhost:3000/admin/order-practical-files/tickets`,
+      `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/tickets`,
       {
         method: "DELETE",
         credentials: "include",

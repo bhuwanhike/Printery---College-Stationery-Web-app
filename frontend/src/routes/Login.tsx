@@ -57,7 +57,7 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const loginData = await fetch("http://localhost:3000/auth/login", {
+      const loginData = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, {
         method: "POST",
         credentials: "include",
         headers: {
