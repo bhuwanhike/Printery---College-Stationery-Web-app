@@ -20,20 +20,15 @@ const PORT = process.env.PORT || 3000;
 
 const app = express();
 
-// const corsOptions = {
-//   origin: "http://localhost:5173",
-//   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-//   credentials: true,
-// };
+const corsOptions = {
+  origin: "https://printery-frontend.onrender.com",
+  methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
 app.use(cookieParser());
 app.use(express.json());
-app.use(
-  cors({
-    origin: "http://localhost:5173", // exact origin
-    credentials: true, // allow cookies/auth headers
-  })
-);
+app.use(cors(corsOptions));
 
 app.use("/auth", authRouter);
 app.use("/upload", uploadFileToDrive);

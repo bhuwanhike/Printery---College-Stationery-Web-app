@@ -22,18 +22,15 @@ const settings_route_1 = __importDefault(require("./routes/settings.route"));
 (0, db_1.default)();
 const PORT = process.env.PORT || 3000;
 const app = (0, express_1.default)();
-// const corsOptions = {
-//   origin: "http://localhost:5173",
-//   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-//   credentials: true,
-// };
+const corsOptions = {
+    origin: "https://printery-frontend.onrender.com",
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+};
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
-app.use((0, cors_1.default)({
-    origin: "http://localhost:5173", // exact origin
-    credentials: true, // allow cookies/auth headers
-}));
+app.use((0, cors_1.default)(corsOptions));
 app.use("/auth", auth_route_1.default);
 app.use("/upload", cloudinaryUpload_route_1.default);
 app.use("/auth", auth_route_2.default);
