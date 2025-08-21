@@ -1,5 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
-import { SettingsIcon } from "lucide-react";
+import { NavLink } from "react-router-dom";
 import logo from "../assets/svlogo.svg";
 import DropDown from "./DropDown";
 const Navbar = () => {
