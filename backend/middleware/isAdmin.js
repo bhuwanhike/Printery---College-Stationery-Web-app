@@ -6,6 +6,7 @@ const adminMiddleware = (req, res, next) => {
             next();
         }
         else {
+            console.log("Access denied! User is not an admin");
             return res
                 .status(403)
                 .json({ message: "Access denied! User is not an admin" });

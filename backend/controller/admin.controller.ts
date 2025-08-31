@@ -8,6 +8,7 @@ import UploadFiles from "../schema/uploadableFiles.schema";
 import Help from "../schema/help.schema";
 import cloudinary from "cloudinary";
 import mongoose from "mongoose";
+import SignUp from "../schema/sign-up.schema";
 
 cloudinary.v2.config({
   secure: true,
@@ -315,6 +316,24 @@ const clearAllTickets = async (req: Request, res: Response) => {
   }
 };
 
+// Change admin details
+const adminSettingsController = async (req: AuthRequest, res: Response) => {
+  try {
+    const { admissionNo, password, userID } = req.body;
+    const user = await SignUp.findById(userID);
+    if (!user) {
+      return res.status(404).json({ error: "No admin found" });
+    }
+    user.admissionNo = admissionNo;
+    user.password = password;
+    await user.save();
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error changing admin details:", error);
+    res.status(500).json({ error: "Failed to change admin details" });
+  }
+};
+
 export {
   getAllOrderedFilesController,
   changeFileStatus,
@@ -328,4 +347,5 @@ export {
   clearAllPrintouts,
   deleteSelectedOrderedFile,
   clearAllOrderedFiles,
+  adminSettingsController,
 };

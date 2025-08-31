@@ -5,6 +5,8 @@ import {
   getJWTdecode,
   fetchUsers,
 } from "../controller/auth.controller";
+import { adminSettingsController } from "../controller/admin.controller";
+
 const Router = express.Router();
 
 Router.route("/sign-up").post(SignUpController).get(fetchUsers);

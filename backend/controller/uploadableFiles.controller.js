@@ -36,10 +36,7 @@ const uploadFilesToDB = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.uploadFilesToDB = uploadFilesToDB;
 const getFilesFromDB = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Get all files, newest first
-        // console.log("Fetching files from DB");
         const files = yield uploadableFiles_schema_1.default.find();
-        // console.log(files);
         res.status(200).json(files);
     }
     catch (error) {

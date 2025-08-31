@@ -11,7 +11,6 @@ const db_1 = __importDefault(require("./config/db"));
 const cors_1 = __importDefault(require("cors"));
 const auth_route_1 = __importDefault(require("./routes/auth.route"));
 const cloudinaryUpload_route_1 = __importDefault(require("./routes/cloudinaryUpload.route"));
-const auth_route_2 = __importDefault(require("./routes/auth.route"));
 const uploadableFiles_route_1 = __importDefault(require("./routes/uploadableFiles.route"));
 const practicalFiles_route_1 = __importDefault(require("./routes/practicalFiles.route"));
 const orderPracticalFIles_route_1 = __importDefault(require("./routes/orderPracticalFIles.route"));
@@ -21,22 +20,19 @@ const help_route_1 = __importDefault(require("./routes/help.route"));
 const settings_route_1 = __importDefault(require("./routes/settings.route"));
 (0, db_1.default)();
 const PORT = process.env.PORT || 3000;
+const corsOrigin = process.env.CORS_ORIGIN;
 const app = (0, express_1.default)();
-// const corsOptions = {
-//   origin: "http://localhost:5173",
-//   methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-//   allowedHeaders: ["Content-Type", "Authorization"],
-//   credentials: true,
-// };
+const corsOptions = {
+    origin: corsOrigin,
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+};
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
-app.use((0, cors_1.default)({
-    origin: "http://localhost:5173", // exact origin
-    credentials: true, // allow cookies/auth headers
-}));
+app.use((0, cors_1.default)(corsOptions));
 app.use("/auth", auth_route_1.default);
 app.use("/upload", cloudinaryUpload_route_1.default);
-app.use("/auth", auth_route_2.default);
 app.use("/uploadableFiles-DB", uploadableFiles_route_1.default);
 app.use("/practical-files", practicalFiles_route_1.default);
 app.use("/order-practical-files", orderPracticalFIles_route_1.default);

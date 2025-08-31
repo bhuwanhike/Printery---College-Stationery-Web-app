@@ -5,6 +5,7 @@ export interface IFile extends Document {
   filename: string;
   url: string;
   isColored: boolean;
+  amount: number;
   qty: number;
   hash: string;
   deletedByUser: boolean;
@@ -30,6 +31,10 @@ const uploadFilesSchema = new mongoose.Schema<IFile>(
     isColored: {
       type: Boolean,
       required: true,
+    },
+    amount: {
+      type: Number,
+      default: 3,
     },
 
     qty: {
@@ -58,7 +63,7 @@ const uploadFilesSchema = new mongoose.Schema<IFile>(
     timestamps: true,
   }
 );
-
+delete mongoose.models.UploadFiles;
 const UploadFiles = mongoose.model<IFile>("UploadFiles", uploadFilesSchema);
 
 export default UploadFiles;

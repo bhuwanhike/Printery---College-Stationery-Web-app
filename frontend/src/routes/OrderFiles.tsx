@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, MinusIcon, PlusIcon } from "lucide-react";
 import { useUser } from "../context/useUser";
 
 import Alert from "@mui/material/Alert";
@@ -11,6 +11,7 @@ type practicalFile = {
   _id: string;
   name: string;
   year: number;
+  amount: number;
   department: string;
   subject_code: string;
 };
@@ -37,6 +38,8 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
   const [fileQuantities, setFileQuantities] = useState<{
     [id: string]: number;
   }>({});
+
+  // const [fileAmount, setFileAmount] = useState(0);
 
   const filteredFiles = practicalFiles.filter((file) => {
     const matchesName = file.name
@@ -175,6 +178,8 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
     <div className="flex flex-col items-center gap-10">
       {/* Search and Filters Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border  border-gray-600 rounded-lg  mb-2 mt-4">
+        
+        
         <div>
           <label className="text-md text-gray-300">Name</label>
           <input
@@ -211,39 +216,44 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
             <option value="Common">Common</option>
           </select>
         </div>
+
+
       </div>
-      <div className="flex flex-col min-w-full text-gray-300 justify-center">
-        <div className="flex border-b border-gray-700 w-[100%] mx-auto font-semibold  py-2 justify-center">
-          <div className="w-1/4 text-center">File Code</div>
-          <div className="w-2/4 text-center">File Name</div>
-          <div className="w-1/4 text-center">Branch</div>
-          <div className="w-2/4 text-center">Qty</div>
-          <div className="w-2/4 text-center">Place Order</div>
+
+      
+      <div className="flex flex-col w-[100%] text-gray-300 justify-center xs:overflow-x-scroll">
+        <div className="flex xs:w-[500vw] 2xs:w-[400vw] xxs:w-[300vw] xsm:w-[200vw] xsl:w-[200vw]  nsl:mx-3 nsl:w-[150vw] sm:w-[150vw] md:mx-9 md:w-[150vw] xs:text-[20px]  lg:w-[100vw] lg:mx-auto 2lg:w-[90vw] xl:w-[80vw] border-b border-gray-700 font-semibold xs:px-1 items-center py-2 justify-center bg-gray-700 nsl:text-[15px] rounded-sm  sm:text-[15px] sm:mb-4 2xl:w-[60vw] 2xl:text-lg">
+          <div className="w-2/6 text-center">File Code</div>
+          <div className="w-2/6 text-center">File Name</div>
+          <div className="w-2/6 text-center">Branch</div>
+          <div className="w-2/6 text-center">Qty</div>
+          <div className="w-2/6 text-center"> Amount</div>
+          <div className="w-2/6 text-center">Place Order</div>
         </div>
         <div className="flex flex-col w-[100%] mx-auto">
           {filteredFiles
             .filter((file) => file.year === activeCard)
             .map((file, index) => (
               <div
-                className="flex items-center border-b border-gray-800 w-[100%] mx-auto py-2 px-4 justify-center"
+                className="flex xs:w-[500vw]  2xs:w-[400vw] xxs:w-[300vw] xsl:w-[200vw] xsm:w-[200vw] nsl:mx-3 nsl:w-[150vw] sm:w-[150vw] md:mx-9 md:w-[150vw] xs:mt-3 lg:w-[100vw] lg:mx-auto 2lg:w-[90vw] xl:w-[80vw] border-b border-gray-700 font-semibold xs:px-0 px-4 py-2 justify-center items-center 2xl:w-[60vw]"
                 key={index}
               >
-                <div className="w-1/4 flex items-center gap-4  justify-center">
-                  <span className="w-[80%] truncate">{file.subject_code}</span>
+                <div className="w-2/6 flex items-center  xs:justify-center ">
+                  <span className="">{file.subject_code}</span>
                 </div>
 
-                <div className="w-2/4 flex items-center gap-4  justify-center ">
-                  <span className="w-[80%] truncate">{file.name}</span>
+                <div className="w-2/6 flex items-center  xs:justify-center xs:pl-4  sm:justify-start truncate ">
+                  <span className="w-[90%] truncate">{file.name}</span>
                 </div>
 
-                <div className="w-1/4 flex items-center gap-4  justify-center ">
+                <div className="w-2/6 flex items-center  xs:justify-center">
                   {file.department}
                 </div>
 
-                <div className="w-2/4 flex justify-center items-center">
-                  <div className="flex items-center border-2 border-yellow-400 rounded-md">
+                <div className="w-2/6 flex justify-center gap-4 ">
+                  <div className="flex items-center border-2 border-yellow-400 xs:gap-1 rounded-md ">
                     <button
-                      className="px-3 py-1 text-lg font-bold text-white !bg-transparent hover:!bg-yellow-600/30 hover:!rounded-full "
+                      className="xs:!px-3 xs:!py-3 md:!px-2 lg:!px-3 lg:!py-2 px-3 py-1 xl:!px-3 xl:!py-3 font-bold text-white !bg-transparent hover:!bg-yellow-600/30 hover:!rounded-full  "
                       onClick={() =>
                         handleQtyChange(
                           file._id,
@@ -251,13 +261,13 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
                         )
                       }
                     >
-                      −
+                      <MinusIcon className="xs:w-6 xsl:w-4 2xl:w-6" />
                     </button>
-                    <span className="px-3 py-1 border-yellow-400 text-yellow-400 text-xl">
+                    <span className="xs:!px-2 xs:!py-2 xs:text-[24px] px-3 py-1 border-yellow-400 text-yellow-400 xsl:text-lg text-xl 2xl:text-2xl">
                       {fileQuantities[file._id] || 1}
                     </span>
                     <button
-                      className="px-3 py-1 text-lg font-bold text-white !bg-transparent hover:!bg-yellow-600/30 hover:!rounded-full"
+                      className="xs:!px-3 xs:!py-3 md:!px-2 lg:!px-3 lg:!py-2 px-3 py-1 xl:!px-3 xl:!py-3 font-bold text-white !bg-transparent hover:!bg-yellow-600/30 hover:!rounded-full"
                       onClick={() =>
                         handleQtyChange(
                           file._id,
@@ -265,13 +275,20 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
                         )
                       }
                     >
-                      +
+                      <PlusIcon className="xs:w-6 xsl:w-4 2xl:w-6" />
                     </button>
                   </div>
                 </div>
-                <div className="w-2/4 flex items-center gap-4 justify-center">
+
+                <div className="w-2/6 flex items-center justify-center ">
+                  <span className="xs:text-[24px] xsl:text-lg text-xl  2xl:text-3xl">
+                    ₹{file.amount * fileQuantities[file._id]}
+                  </span>
+                </div>
+
+                <div className="w-2/6 flex items-center justify-center">
                   <button
-                    className={`px-3 py-1 !text-lg !font-bold !text-white !bg-blue-600 hover:!bg-blue-600/30 ${
+                    className={`xs:!p-3 xs:!text-[18px] px-3 py-1 !text-lg !font-bold !text-white !bg-blue-600 hover:!bg-blue-600/30 ${
                       showToast.includes(file._id) ? "hidden" : ""
                     } ${
                       isProcessing.includes(file._id)
@@ -286,7 +303,10 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
                       : "Place Order"}
                   </button>
                   {showToast.includes(file._id) && (
-                    <Alert variant="outlined" className="!text-green-500">
+                    <Alert
+                      variant="outlined"
+                      className="!text-green-500 xs:!text-[18px]"
+                    >
                       In queue
                     </Alert>
                   )}
@@ -296,14 +316,26 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
         </div>
       </div>
       {placeOrderFiles.length > 0 && isProcessing.length === 0 && (
-        <button
-          className={`px-3 py-1 !text-lg !font-bold !text-white !bg-blue-600 hover:!bg-blue-600/30  ${
-            placeOrderFiles.length > 0 ? "block" : "hidden"
-          }`}
-          onClick={confirmAndUpload}
-        >
-          Confirm and Pay
-        </button>
+        <div className="flex xs:text-[20px] xs:mt-4 flex-col items-center xs:text-sm md:text-[16px] md:mt-6 2xl:text-xl">
+          <div className="">
+            Total Amount:{" "}
+            <span className="font-bold">
+              ₹
+              {placeOrderFiles.reduce(
+                (acc, file) => acc + file.amount * fileQuantities[file._id],
+                0
+              )}
+            </span>
+          </div>
+          <button
+            className={`!px-6 !py-2 xs:!px-4  !bg-blue-500 text-white font-bold rounded-md xs:mt-2 mt-4 hover:!bg-blue-600  ${
+              placeOrderFiles.length > 0 ? "block" : "hidden"
+            }`}
+            onClick={confirmAndUpload}
+          >
+            Confirm and Pay
+          </button>
+        </div>
       )}
     </div>
   );
@@ -315,23 +347,23 @@ const Orderfiles = () => {
     null
   );
   return (
-    <div className="mx-auto w-[70%] h-full bg-[#0b112d] rounded-2xl p-8 shadow-lg border border-[#1b254b] my-30 px-20 flex flex-col gap-20 ">
-      <div className=" py-10 px-10 w-full">
+    <div className="xs:min-w-[95%] xs:my-[10vh] 2xs:my-[12vh]  xsm:my-[12vh] nsl:my-[16vh] nsl:min-w-[85%] sm:min-w-[80%] sm:!p-12  md:min-w-[75%] md:my-45 xl:my-50  mx-auto bg-[#0b112d] w-[70%] h-full rounded-2xl xs:p-8 shadow-lg border border-[#1b254b] px-20 flex flex-col items-center justify-center xs:gap-15 gap-20 2xl:my-60 ">
+      <div className="xs:p-0 py-10 px-10 w-full">
         <div className="navigation flex items-center gap-6 justify-between">
-          <div className="flex items-center gap-8">
+          <div className="flex xs:gap-4 items-center gap-8">
             <button
-              className="cursor-pointer hover:!opacity-80 !bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 !rounded-full !p-2 flex items-center justify-center"
+              className="xs:!p-1 xl:!p-2 2xl:!p-3 cursor-pointer hover:!opacity-80 !bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 !rounded-full !p-2 flex items-center justify-center"
               onClick={() => setActiveCard(null)}
             >
               {" "}
               <ArrowLeft />
             </button>
-            <p className="text-3xl font-bold text-white">
+            <p className="xs:text-[19px] xsm:text-[22px] lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-white">
               {activeCard ? "Order Practical Files" : "Practical Files"}
             </p>
           </div>
           <button
-            className="cursor-pointer hover:!opacity-80 !bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 !rounded-full !p-2 flex items-center justify-center"
+            className="xs:!p-1 xl:!p-2 2xl:!p-3 cursor-pointer hover:!opacity-80 !bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 !rounded-full !p-2 flex items-center justify-center"
             onClick={() => setActiveCard(preservedCardState)}
           >
             {" "}
@@ -339,10 +371,10 @@ const Orderfiles = () => {
           </button>
         </div>
 
-        <hr className="my-5 border-1 border-transparent h-1 w-[100%] mx-auto bg-gradient-to-r from-red-600 to-blue-600" />
+        <hr className="xs:w-full xs:my-4 my-5 border-1 border-transparent xs:h-[3px] h-1 xs:min-w-[75vw]  bg-gradient-to-r from-red-600 to-blue-600 sm:min-w-[90%] md:min-w-[62vw]" />
 
         {activeCard === null && (
-          <div className="mt-10 grid grid-cols-2 gap-8 justify-center items-center px-20 py-10">
+          <div className="mt-10 grid xs:grid-cols-1 xsm:px-15 xsm:py-5 md:px-0 md:grid-cols-2 xl:py-15 xl:px-10 nxl:px-20 2xl:gap-15 grid-cols-2 gap-8 justify-center items-center xs:p-8 px-20 py-10">
             {Years.map((year, index) => (
               <motion.div
                 className="relative p-[1px] bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 !rounded-3xl hover:cursor-pointer"
@@ -357,7 +389,7 @@ const Orderfiles = () => {
                 }}
               >
                 <button
-                  className="relative flex flex-col items-center justify-center w-full h-80 !bg-gray-900 !rounded-3xl !overflow-hidden "
+                  className="relative flex flex-col xsl:!py-25 md:!py-25 lg:!py-30 2xl:!py-40 items-center justify-center xs:w-[4vw] xs:h-30 w-full h-80 !bg-gray-900 !rounded-3xl !overflow-hidden "
                   style={{ width: "calc(100% - 2px)", margin: "1px" }}
                   onClick={() => {
                     setPreservedCardState(index + 1);
@@ -373,11 +405,7 @@ const Orderfiles = () => {
           </div>
         )}
 
-        {activeCard !== null && (
-          <SemesterFileContent
-            activeCard={activeCard}
-          />
-        )}
+        {activeCard !== null && <SemesterFileContent activeCard={activeCard} />}
       </div>
     </div>
   );

@@ -42,7 +42,6 @@ const uploadToCloudinary = (file, admissionNo) => {
     });
 };
 const uploadFilesToCloudinary = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { isColored, qty, status } = req.body;
     try {
         if (!req.files || !req.files.length) {
             return res.status(400).json({ error: "No files uploaded" });

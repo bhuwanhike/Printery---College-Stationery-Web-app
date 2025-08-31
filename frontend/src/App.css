@@ -24,6 +24,21 @@
   }
 }
 
+@theme {
+  --breakpoint-xs: 200px;
+  --breakpoint-2xs: 320px;
+  --breakpoint-xxs: 390px;
+  --breakpoint-xsm: 470px;
+  --breakpoint-xsl: 500px;
+  --breakpoint-nsl: 570px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-2lg: 1140px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-nxl: 1440px;
+  --breakpoint-2xl: 1536px;
+}
 .scroll-hidden::-webkit-scrollbar {
   display: none;
 }

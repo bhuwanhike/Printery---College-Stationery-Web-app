@@ -23,20 +23,40 @@ const signUpSchema = new mongoose_1.default.Schema({
             /^[A-Za-z0-9]+$/i,
             "Admission number must contain only letters and numbers",
         ],
-        minlength: [13, "Admission No. must be 13 characters long"],
-        maxlength: [13, "Admission No. must be 13 characters long"],
+        validate: {
+            validator: function (v) {
+                if (this.isAdmin) {
+                    return v.length >= 8;
+                }
+                else {
+                    return v.length === 13;
+                }
+            },
+            message: function (props) {
+                if (this.isAdmin) {
+                    return `Admin username must be at least 8 characters. Got "${props.value}"`;
+                }
+                else {
+                    return `Admission no. must be exactly 13 characters. Got "${props.value}"`;
+                }
+            },
+        },
         trim: true,
     },
     department: {
         type: String,
-        required: true,
+        required: function () {
+            return !this.isAdmin;
+        },
         enum: ["CSE", "ECE", "ME", "CE", "EE"],
         message: "Department must be one of CSE, ECE, ME, CE, or EE",
         trim: true,
     },
     year: {
         type: Number,
-        required: true,
+        required: function () {
+            return !this.isAdmin;
+        },
         enum: [1, 2, 3, 4],
         message: "Year must be between 1 and 4",
         trim: true,
@@ -56,14 +76,14 @@ const signUpSchema = new mongoose_1.default.Schema({
 signUpSchema.pre("save", function (next) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!this.isModified("password")) {
-            next();
+            return next();
         }
         try {
             const hashPassword = yield bcrypt_1.default.hash(this.password, 10);
             this.password = hashPassword;
         }
         catch (error) {
-            next(error);
+            return next(error);
         }
     });
 });

@@ -12,6 +12,7 @@ Router.route("/")
     .post(authMiddleware_1.authMiddleware, isAdmin_1.default, admin_controller_1.orderPracticalFilesController)
     .get(authMiddleware_1.authMiddleware, isAdmin_1.default, admin_controller_1.getAllOrderedFilesController)
     .delete(authMiddleware_1.authMiddleware, isAdmin_1.default, admin_controller_1.deleteSelectedFile);
+Router.route("/admin-settings").put(admin_controller_1.adminSettingsController);
 Router.route("/changeFileStatus").put(authMiddleware_1.authMiddleware, isAdmin_1.default, admin_controller_1.changeFileStatus);
 Router.route("/printouts").delete(authMiddleware_1.authMiddleware, isAdmin_1.default, admin_controller_1.clearAllPrintouts);
 Router.route("/orderedFiles/delete-selected").delete(authMiddleware_1.authMiddleware, isAdmin_1.default, admin_controller_1.deleteSelectedOrderedFile);

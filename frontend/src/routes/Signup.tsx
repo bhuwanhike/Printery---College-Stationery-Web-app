@@ -17,6 +17,7 @@ export default function Signup() {
   const [hasCapitalLetter, setHasCapitalLetter] = useState(false);
 
   const [admissionNoLength, setAdmissionNoLength] = useState(false);
+  const [containSpecialCharacter, setContainSpecialCharacter] = useState(false);
 
   const [passwordLength, setPasswordLength] = useState(false);
 
@@ -32,6 +33,9 @@ export default function Signup() {
       const containsUpperCase = /[A-Z]/.test(value);
 
       setHasCapitalLetter(containsUpperCase);
+
+      const containsSpecialCharater = /[^A-Za-z0-9]/.test(value);
+      setContainSpecialCharacter(containsSpecialCharater);
     }
     if (
       name === "admissionNo" &&
@@ -60,14 +64,17 @@ export default function Signup() {
   ) => {
     e.preventDefault();
     try {
-      const signupData = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const signupData = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       if (signupData.ok) {
         console.log("successfull");
         setUserCreated(true);
@@ -87,20 +94,23 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="p-8 rounded-xl w-full max-w-md bg-white  text-black">
-        <h2 className="text-2xl font-bold text-center mb-2 bg-gradient-to-r from-purple-500  to-blue-800 bg-clip-text text-transparent">
+      <div className="p-8 rounded-xl xs:w-[90%] 2xs:w-[80vw] xsl:w-[80vw] nsl:w-[70vw] md:w-[60vw] lg:w-[50vw] 2lg:w-[40vw] xl:max-w-[40vw] nxl:max-w-[35vw] 2xl:max-w-[30vw] bg-white  text-black">
+        <h2 className="xs:text-[40px] 2xs:text-[30px] text-2xl font-bold text-center mb-2 bg-gradient-to-r from-purple-500  to-blue-800 bg-clip-text text-transparent">
           Welcome to Printery
         </h2>
-        <p className="text-center text-black mb-6">
+        <p className="xs:text-[20px] 2xs:text-[18px] text-center text-black mb-6">
           Now no need to struggle in the crowd
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4 xs:text-[20px] 2xs:text-[18px] sm:text-xl md:px-5"
+        >
           {/* Admission No */}
           <div>
             <label
               htmlFor="admissionNo"
-              className="block text-sm font-medium mb-1"
+              className="xs:text-[20px] 2xs:text-[18px] sm:text-xl block text-sm font-medium mb-1 text-gray-800"
             >
               Admission No.
             </label>
@@ -127,13 +137,18 @@ export default function Signup() {
                 Admission no. should be 13 characters long
               </p>
             )}
+            {containSpecialCharacter && (
+              <p className="text-red-500 ">
+                Admission no. cannot contain special characters
+              </p>
+            )}
           </div>
 
           {/* Department */}
           <div>
             <label
               htmlFor="department"
-              className="block text-sm font-medium mb-1"
+              className="xs:text-[20px] 2xs:text-[18px] sm:text-xl block text-sm font-medium mb-1 text-gray-800"
             >
               Department
             </label>
@@ -160,7 +175,10 @@ export default function Signup() {
 
           {/* Year */}
           <div>
-            <label htmlFor="year" className="block text-sm font-medium mb-1">
+            <label
+              htmlFor="year"
+              className="xs:text-[20px] 2xs:text-[18px] sm:text-xl block text-sm font-medium mb-1 text-gray-800"
+            >
               Year
             </label>
             <div className="flex items-center ">
@@ -187,7 +205,7 @@ export default function Signup() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium mb-1"
+              className="xs:text-[20px] 2xs:text-[18px] sm:text-xl block text-sm font-medium mb-1 text-gray-800"
             >
               Password
             </label>
@@ -225,7 +243,7 @@ export default function Signup() {
           <PrinteryButton innerText="Create Account" />
         </form>
 
-        <p className="mt-4 text-center text-sm">
+        <p className="xs:text-[20px] 2xs:text-[18px] mt-4 text-center text-sm">
           Already have an account?{" "}
           <a href="/login" className="text-purple-600 hover:underline">
             Sign in here

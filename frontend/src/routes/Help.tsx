@@ -27,6 +27,8 @@ const Help = () => {
   const [admissionNoLength, setAdmissionNoLength] = useState(false);
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
 
+  const [containSpecialCharacter, setContainSpecialCharacter] = useState(false);
+
   const [formData, setFormData] = useState({
     admissionNo: "",
     email: "",
@@ -50,6 +52,9 @@ const Help = () => {
     if (name === "admissionNo") {
       const containsUpperCase = /[A-Z]/.test(value);
       setHasCapitalLetter(containsUpperCase);
+
+      const containsSpecialCharater = /[^A-Za-z0-9]/.test(value);
+      setContainSpecialCharacter(containsSpecialCharater);
 
       if (value.length !== 0 && value.length !== 13) {
         setAdmissionNoLength(true);
@@ -139,8 +144,6 @@ const Help = () => {
       }
     });
 
-    
-
     setTickets(
       data.help.filter((ticket: HelpModel) => !removedIds.includes(ticket._id))
     );
@@ -213,18 +216,21 @@ const Help = () => {
   }, [fetchTickets, removeTicket, clearClosedTickets]);
 
   return (
-    <div className=" bg-[#0b112d] rounded-2xl p-8 w-[70%]  shadow-lg border border-[#1b254b] mx-auto my-30 px-20 min-h-[70vh]">
-      <div className="py-10 px-10 w-full h-full ">
-        <p className="text-3xl font-bold text-white pl-8">Help & Support</p>
+    <div className="xs:min-w-[95%] xs:my-[10vh] 2xs:my-[12vh]  xsm:my-[12vh] nsl:my-[16vh] nsl:min-w-[85%] sm:min-w-[80%] sm:!p-12  md:min-w-[75%] md:my-45 xl:my-50  mx-auto bg-[#0b112d] w-[70%] h-full rounded-2xl xs:p-8 shadow-lg border border-[#1b254b] px-20 flex flex-col items-center justify-center xs:gap-15 gap-20 2xl:my-60 ">
+      <div className="xs:p-0 py-10 px-10 w-full ">
+        <p className="xs:text-[19px] xsm:text-[22px] lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-white">
+          Help & Support
+        </p>
 
-        <hr className=" my-5 border-1 border-transparent h-1 w-[100%] mx-auto bg-gradient-to-r from-red-600 to-blue-600" />
-        <div className="flex flex-col min-w-full text-gray-300  justify-center gap-50 py-10">
-          <div>
-            <div className="flex border-b border-gray-700 w-[100%] mx-auto font-semibold  py-2 justify-center">
+        <hr className="xs:w-full xs:my-2 xsm:my-1 border-1 md:my-3 border-transparent xs:h-[3px] h-1 xs:min-w-[75vw]  bg-gradient-to-r from-red-600 to-blue-600 sm:min-w-[90%] md:min-w-[62vw]" />
+
+        <div className="flex flex-col items-center gap-10 xs:my-10">
+          <div className="flex flex-col w-[100%] text-gray-300 justify-center xs:overflow-x-scroll ">
+            <div className="flex xs:w-[600vw] 2xs:w-[400vw] xxs:w-[300vw] xsm:w-[250vw] xsl:w-[220vw]  nsl:mx-3 nsl:w-[200vw] sm:w-[170vw] md:mx-9 md:w-[150vw] xs:text-[20px]  lg:w-[120vw] lg:mx-auto 2lg:w-[100vw] nxl:w-[90vw] 2xl:w-[80vw]  border-b border-gray-700 font-semibold xs:px-1 items-center py-2 justify-center bg-gray-700 nsl:text-[15px] rounded-sm  sm:text-[15px] sm:mb-4 2xl:text-lg">
               <div className="w-1/6 text-center">Ticket ID</div>
-              <div className="w-1/6 text-center">Admission No.</div>
+              <div className="w-2/6 text-center">Admission No.</div>
               <div className="w-2/6 text-center">Open date</div>
-              <div className="w-1/6 text-center">Status</div>
+              <div className="w-2/6 text-center">Status</div>
               <div className="w-2/6 text-center">Close date</div>
               <div className="w-2/6 text-center">Details</div>
             </div>
@@ -232,21 +238,21 @@ const Help = () => {
               {tickets.length > 0 ? (
                 tickets.map((ticket: HelpModel, index) => (
                   <div
-                    className="flex items-center border-b border-gray-800 w-[100%] mx-auto py-2  justify-center"
+                    className="flex xs:w-[600vw] xs:text-[20px] nsl:text-[18px]  2xs:w-[400vw] xxs:w-[300vw] xsl:w-[220vw] xsm:w-[250vw] nsl:mx-3 nsl:w-[200vw] sm:w-[170vw] md:mx-9 md:w-[150vw] xs:mt-3 lg:w-[120vw] lg:mx-auto 2lg:w-[100vw] nxl:w-[90vw] 2xl:w-[80vw] border-b border-gray-700 font-semibold xs:px-0 px-4 py-2 justify-center items-center "
                     key={index}
                   >
                     <div className="w-1/6 flex items-center justify-center ">
                       {ticket._id.slice(-3) + ticket.admissionNo.slice(-3)}
                     </div>
 
-                    <div className="w-1/6 flex items-center justify-center ">
+                    <div className="w-2/6 flex items-center justify-center ">
                       {ticket.admissionNo}
                     </div>
 
-                    <div className="w-2/6 flex items-center justify-center  ">
+                    <div className="w-2/6 flex items-center justify-center  xsm:text-center">
                       {ticket.createdAt}
                     </div>
-                    <div className="w-1/6 flex justify-center items-center">
+                    <div className="w-2/6 flex justify-center items-center">
                       {ticket.status === "closed" ? (
                         <div className="flex items-center gap-2">
                           <CircleCheckBig className="w-5 h-5 text-green-500" />
@@ -259,14 +265,14 @@ const Help = () => {
                         </div>
                       )}
                     </div>
-                    <div className="w-2/6 flex items-center justify-center ">
+                    <div className="w-2/6 flex items-center justify-center xsm:text-center">
                       {ticket.status === "closed" ? ticket.updatedAt : "--"}
                     </div>
 
                     <div className="w-2/6 flex items-center ">
                       <div className="w-[70%] flex items-center justify-end pr-1">
                         <button
-                          className={`w-fit !text-lg !py-1 !text-white !bg-blue-600 hover:!bg-blue-600/70 `}
+                          className={`w-fit !text-lg !py-1 !text-white !bg-blue-600 hover:!bg-blue-600/70 xs:!text-[22px]`}
                           onClick={() => openView(ticket)}
                         >
                           View
@@ -278,7 +284,7 @@ const Help = () => {
                             className="flex items-center justify-center !text-white !bg-red-800 !py-2 rounded-lg hover:!bg-red-800/70"
                             onClick={() => removeTicket(ticket._id)}
                           >
-                            <Trash2 className="h-5 w-5 " />
+                            <Trash2 className="xs:h-7 xs:w-7 h-6 w-6 " />
                           </button>
                         )}
                       </div>
@@ -286,37 +292,28 @@ const Help = () => {
                   </div>
                 ))
               ) : (
-                <div className="flex items-center justify-center w-full mt-20">
+                <div className="xs:mt-4 xs:text-[20px] xxs:mt-8 text-gray-300 flex items-center justify-center xsl:text-[16px] xsl:py-8 xsm:text-[15px] 2xl:text-xl">
                   No tickets yet
                 </div>
               )}
             </div>
           </div>
 
-          <div className="flex justify-center items-center">
-            <div className="w-[45%] flex justify-end"></div>
+          <div className="flex xs:flex-col xs:gap-6 justify-center items-center sm:flex-row sm:justify-between sm:w-[90%] nxl:w-[50%]">
+            {allTicketsClosed && tickets.length > 0 && (
+              <button
+                className={`xs:mt-4 sm:mt-0 xs:!p-3 flex xs:!text-[20px] flex-col items-center xs:text-sm md:text-[16px] !bg-blue-600  hover:!bg-blue-800 xsm:!p-2 xsl:text-lg xsl:!px-4 2xl:!text-xl`}
+                onClick={clearClosedTickets}
+              >
+                Clear All
+              </button>
+            )}
 
             <div
-              className={`w-[55%]  flex ${
-                allTicketsClosed && tickets.length > 0
-                  ? "justify-between"
-                  : "justify-end"
-              }`}
+              className="w-fit p-2 bg-gradient-to-r xs:text-[20px] from-purple-900 via-blue-600 to-blue-800  text-white rounded-lg font-medium hover:opacity-90 flex items-center gap-2 px-3 hover:cursor-pointer"
+              onClick={() => setIsOpen(!isOpen)}
             >
-              {allTicketsClosed && tickets.length > 0 && (
-                <button
-                  className={`w-fit !text-lg !py-1 !text-white !bg-blue-600 hover:!bg-blue-600/70 `}
-                  onClick={clearClosedTickets}
-                >
-                  Clear All
-                </button>
-              )}
-              <div
-                className="w-fit h-10 bg-gradient-to-r from-purple-900 via-blue-600 to-blue-800  text-white rounded-lg font-medium hover:opacity-90 flex items-center gap-2 px-3 hover:cursor-pointer"
-                onClick={() => setIsOpen(!isOpen)}
-              >
-                <MessageCircleQuestionMark /> <span>Open a ticket</span>
-              </div>
+              <MessageCircleQuestionMark /> <span>Open a ticket</span>
             </div>
           </div>
         </div>
@@ -324,7 +321,7 @@ const Help = () => {
         {/* Form Modal */}
         {isOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="relative w-[70%] p-15 text-lg max-w-3xl bg-[#0b112d] rounded-2xl  shadow-lg border border-[#1b254b] mt-40">
+            <div className=" xs:px-5 xs:-mt-40 2xs:-mt-20   relative text-lg max-w-3xl bg-[#0b112d] xs:w-[90%] nsl:w-[85%] nsl:p-10 sm:p-15 md:w-[70%] lg:p-20 2lg:mt-10 shadow-lg border border-[#1b254b]">
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
@@ -335,10 +332,13 @@ const Help = () => {
                 </div>
               </button>
 
-              <form onSubmit={handleSubmit} className="space-y-8 mt-10">
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-8 mt-10 xs:text-[22px] 2xs:text-[20px] nsl:text-[18px] lg:text-[20px]"
+              >
                 {/* Admission No */}
                 <div>
-                  <label className="block text-md font-medium text-gray-300 mb-2">
+                  <label className="block  text-md font-medium text-gray-300 mb-2">
                     Admission No
                   </label>
                   <input
@@ -358,6 +358,11 @@ const Help = () => {
                   {admissionNoLength && (
                     <p className="text-red-500 ">
                       Admission no. should be 13 characters long
+                    </p>
+                  )}
+                  {containSpecialCharacter && (
+                    <p className="text-red-500 ">
+                      Admission no. cannot contain special characters
                     </p>
                   )}
                 </div>
@@ -400,7 +405,7 @@ const Help = () => {
                 </div>
 
                 {/* Submit */}
-                <div className="w-[40%] mx-auto mt-8">
+                <div className="xs:w-full w-[40%] mx-auto mt-8">
                   <button
                     type="submit"
                     className="w-full py-2 bg-gradient-to-r from-purple-900 via-blue-600 to-blue-800  text-white rounded-lg font-medium hover:opacity-90"
@@ -418,7 +423,7 @@ const Help = () => {
 
         {isViewOpen && selectedTicket && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-            <div className="relative w-[70%] p-10 text-lg max-w-3xl bg-[#0b112d] rounded-2xl shadow-lg border border-[#1b254b] mt-40">
+            <div className="xs:px-5 xs:py-10 xs:-mt-40 2xs:-mt-20   relative text-lg max-w-3xl bg-[#0b112d] xs:w-[90%] nsl:w-[85%] nsl:p-10 sm:p-15 md:w-[70%] lg:p-20 2lg:mt-10 shadow-lg border border-[#1b254b]">
               {/* Close */}
               <button
                 type="button"

@@ -23,10 +23,7 @@ const uploadFilesToDB = async (req: Request, res: Response) => {
 
 const getFilesFromDB = async (req: Request, res: Response) => {
   try {
-    // Get all files, newest first
-    // console.log("Fetching files from DB");
     const files = await UploadFiles.find();
-    // console.log(files);
     res.status(200).json(files);
   } catch (error) {
     console.error("Error fetching files:", error);

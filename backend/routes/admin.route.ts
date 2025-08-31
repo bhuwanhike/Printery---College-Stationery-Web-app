@@ -1,6 +1,7 @@
 import express from "express";
 import { authMiddleware } from "../middleware/authMiddleware";
 import adminMiddleware from "../middleware/isAdmin";
+import { Request, Response } from "express";
 import {
   getAllOrderedFilesController,
   orderPracticalFilesController,
@@ -14,6 +15,7 @@ import {
   clearAllPrintouts,
   deleteSelectedOrderedFile,
   clearAllOrderedFiles,
+  adminSettingsController,
 } from "../controller/admin.controller";
 
 const Router = express.Router();
@@ -22,6 +24,8 @@ Router.route("/")
   .post(authMiddleware, adminMiddleware, orderPracticalFilesController)
   .get(authMiddleware, adminMiddleware, getAllOrderedFilesController)
   .delete(authMiddleware, adminMiddleware, deleteSelectedFile);
+Router.route("/admin-settings").put(adminSettingsController);
+
 Router.route("/changeFileStatus").put(
   authMiddleware,
   adminMiddleware,
@@ -46,6 +50,7 @@ Router.route("/tickets")
   .get(authMiddleware, adminMiddleware, getTickets)
   .put(authMiddleware, adminMiddleware, changeTicketStatus)
   .delete(authMiddleware, adminMiddleware, clearAllTickets);
+
 Router.route("/changePrintoutStatus/:id").put(
   authMiddleware,
   adminMiddleware,

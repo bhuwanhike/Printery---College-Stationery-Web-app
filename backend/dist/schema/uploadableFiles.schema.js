@@ -22,6 +22,10 @@ const uploadFilesSchema = new mongoose_1.default.Schema({
         type: Boolean,
         required: true,
     },
+    amount: {
+        type: Number,
+        default: 3,
+    },
     qty: {
         type: Number,
         required: true,
@@ -44,5 +48,6 @@ const uploadFilesSchema = new mongoose_1.default.Schema({
 }, {
     timestamps: true,
 });
+delete mongoose_1.default.models.UploadFiles;
 const UploadFiles = mongoose_1.default.model("UploadFiles", uploadFilesSchema);
 exports.default = UploadFiles;

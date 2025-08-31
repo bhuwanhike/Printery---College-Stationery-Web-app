@@ -25,9 +25,9 @@ export default function SettingsDropdown() {
   }, []);
 
   return (
-    <div className="relative inline-block text-left" ref={dropdownRef}>
+    <div className="relative inline-block" ref={dropdownRef}>
       {/* Gear button */}
-      <div className="relative inline-block">
+      <div className="xs:flex xs:items-center xs:justify-center xs:w-8 xs:h-8 2xl:w-14 2xl:h-14 relative inline-block">
         {/* Hidden gradient defs (must be in the DOM once) */}
         <svg aria-hidden className="absolute w-0 h-0">
           <defs>
@@ -44,10 +44,10 @@ export default function SettingsDropdown() {
           className="!inline-block !rounded-full !p-[1px] !bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"
           onClick={() => setOpen(!open)}
         >
-          <span className="!flex !items-center !justify-center !w-12 !h-12 !rounded-full !bg-gray-900">
+          <span className="!flex !items-center !justify-center xs:w-8 xs:h-8 2xl:w-14 2xl:h-14 !rounded-full !bg-gray-900 2lg:w-10 2lg:h-10">
             {/* 👇 Override the stroke to use the gradient */}
             <SettingsIcon
-              className="w-8 h-8"
+              className="xs:w-5 xs:h-5 2lg:w-6 2lg:h-6 2xl:w-10 2xl:h-10 "
               style={{ stroke: "url(#gearGradient)" }}
               strokeWidth={2}
             />
@@ -63,28 +63,28 @@ export default function SettingsDropdown() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -5 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-40 rounded-xl bg-gray-900 shadow-lg border border-gray-700 "
+            className="absolute right-0 mt-2 lg:mt-4 lg:-mr-2 w-40 rounded-xl bg-gray-900 shadow-lg border border-gray-700 "
           >
             <ul className="flex flex-col text-white text-sm items-center ">
               <li className=" w-full flex items-center justify-center hover:!bg-gray-800 px-2 pt-2 pb-1">
                 <NavLink
                   to="/account"
-                  className=" px-4 py-1 hover:bg-gray-800 rounded-t-xl !text-white !font-bold"
+                  className=" px-4 py-1 hover:bg-gray-800 rounded-t-xl !text-white 2xl:text-xl"
                   onClick={() => setOpen(false)}
                 >
                   Account
                 </NavLink>
               </li>
               <hr className="w-full  text-gray-700" />
-              <li className=" w-full flex items-center justify-center hover:!bg-gray-800 pt-1">
-                <LogOutIcon className="w-5 h-5 " />
+              <li className=" w-full flex items-center justify-center hover:!bg-gray-800 pt-1 ">
+                <LogOutIcon className="" />
                 <button
                   onClick={async () => {
                     setOpen(false);
                     await logout();
                     navigate("/login");
                   }}
-                  className=" !border-none  !text-red-500 !font-bold  !bg-transparent"
+                  className=" !border-none  !text-red-500 !font-bold  !bg-transparent 2xl:!text-xl !px-2"
                 >
                   Log out
                 </button>

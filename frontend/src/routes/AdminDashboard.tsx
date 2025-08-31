@@ -10,17 +10,19 @@ import {
   CheckCircle,
   AlertCircle,
   CircleCheckBigIcon,
+  SettingsIcon,
   XIcon,
 } from "lucide-react";
 
 import logo from "../assets/svlogo.svg";
 import pdfIcon from "../assets/pdf-icon.png";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { useAuth } from "../context/useAuth";
+import { useUser } from "../context/useUser";
 
 type Printout = {
   _id: string;
@@ -121,15 +123,20 @@ const MainContent = ({
   const [clearAllOrderedFilesList, setClearAllOrderedFilesList] =
     useState(false);
 
+  // Users --fetching
+
   const fetchUsers = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/sign-up`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!res.ok) {
         if (res.status === 403) {
@@ -154,15 +161,20 @@ const MainContent = ({
     }
   }, []);
 
+  // Printouts --fetching
+
   const fetchPrintouts = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/uploadableFiles-DB`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/uploadableFiles-DB`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!res.ok) {
         if (res.status === 403) {
           console.log(
@@ -204,6 +216,8 @@ const MainContent = ({
     }
   }, []);
 
+  // Ordered Files --fetching
+
   const getOrderedFiles = useCallback(async () => {
     try {
       const res = await fetch(
@@ -244,10 +258,14 @@ const MainContent = ({
   }, []);
   const [clearAllTicketsList, setClearAllTicketsList] = useState(false);
 
+  // Tickets --fetching
+
   const getTickets = useCallback(async (userList: User[]) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/tickets`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/tickets`,
         {
           method: "GET",
           credentials: "include",
@@ -299,7 +317,9 @@ const MainContent = ({
     async (_id: string) => {
       // Removed usersList from here
       await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/tickets`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/tickets`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -342,7 +362,9 @@ const MainContent = ({
   const changePrintoutStatus = async (id: string) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/changePrintoutStatus/${id}`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/changePrintoutStatus/${id}`,
         {
           method: "PUT",
           credentials: "include",
@@ -370,7 +392,9 @@ const MainContent = ({
   ) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/changeFileStatus`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/changeFileStatus`,
         {
           method: "PUT",
           credentials: "include",
@@ -608,8 +632,12 @@ const MainContent = ({
 
   const clearAllPrintouts = useCallback(async (userId?: string | null) => {
     const url = userId
-      ? `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/printouts?userId=${userId}`
-      : `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/printouts`;
+      ? `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/printouts?userId=${userId}`
+      : `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/printouts`;
     await fetch(url, {
       method: "DELETE",
       credentials: "include",
@@ -623,7 +651,9 @@ const MainContent = ({
   const deleteSelectedOrderedFile = useCallback(async (id: string) => {
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/orderedFiles/delete-selected`,
+        `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/orderedFiles/delete-selected`,
         {
           method: "DELETE",
           credentials: "include",
@@ -642,8 +672,12 @@ const MainContent = ({
 
   const clearAllOrderedFiles = useCallback(async (userId?: string | null) => {
     const url = userId
-      ? `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/orderedFiles/delete-all/?userId=${userId}`
-      : `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/orderedFiles/delete-all`;
+      ? `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/orderedFiles/delete-all/?userId=${userId}`
+      : `${
+          import.meta.env.VITE_BACKEND_URL
+        }/admin/order-practical-files/orderedFiles/delete-all`;
     await fetch(url, {
       method: "DELETE",
       credentials: "include",
@@ -656,7 +690,9 @@ const MainContent = ({
 
   const removeTicket = useCallback(async (_id: string) => {
     const response = await fetch(
-      `${import.meta.env.VITE_BACKEND_URL}/admin/order-practical-files/tickets/${_id}`,
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/admin/order-practical-files/tickets/${_id}`,
       {
         method: "DELETE",
         credentials: "include",
@@ -1555,7 +1591,70 @@ const AdminDashboard = () => {
     { name: "Payments", icon: DollarSignIcon },
   ];
 
-  const bottomTabs = [{ name: "Log out", icon: LogOutIcon }];
+  const bottomTabs = [
+    { name: "Settings", icon: SettingsIcon },
+    { name: "Log out", icon: LogOutIcon },
+  ];
+
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [hasCapitalLetter, setHasCapitalLetter] = useState(false);
+  const [passwordLength, setPasswordLength] = useState(false);
+
+  const [containSpecialCharacter, setContainSpecialCharacter] = useState(false);
+
+  const [formData, setFormData] = useState({
+    admissionNo: "",
+    password: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === "admissionNo") {
+      const containsUpperCase = /[A-Z]/.test(value);
+
+      setHasCapitalLetter(containsUpperCase);
+
+      const containsSpecialCharater = /[^A-Za-z0-9]/.test(value);
+      setContainSpecialCharacter(containsSpecialCharater);
+    }
+
+    if (name === "password" && value.length < 8 && value.length !== 0) {
+      setPasswordLength(true);
+    }
+    if (value.length === 8 || value.length > 8) {
+      setPasswordLength(false);
+    }
+  };
+
+  const { userID } = useUser();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const { admissionNo, password } = formData;
+    console.log(userID);
+    const UpdateAdmin = await fetch(
+      `${
+        import.meta.env.VITE_BACKEND_URL
+      }/admin/order-practical-files/admin-settings`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ admissionNo, password, userID }),
+      }
+    );
+    console.log(UpdateAdmin);
+
+    setFormData({
+      admissionNo: "",
+      password: "",
+    });
+    setPasswordLength(false);
+  };
 
   return (
     <div className="flex h-screen w-screen bg-[#10182C]">
@@ -1588,26 +1687,115 @@ const AdminDashboard = () => {
             ))}
           </nav>
         </div>
-        <nav className="space-y-2 border-t border-gray-200 pt-6">
+        <nav className="border-t border-gray-200 pt-4">
           {bottomTabs.map((tab) => (
             <a
               key={tab.name}
               onClick={async () => {
+                if (tab.name === "Settings") {
+                  setIsSettingsOpen(true);
+                  return;
+                }
                 await logout();
                 navigate("/login");
               }}
-              className={`flex items-center p-3 rounded-lg transition-colors duration-200 ${
-                activeTab === tab.name
-                  ? "!text-red-500"
-                  : "!text-red-500 hover:bg-[#2C3B68]"
+              className={`flex items-center p-3 rounded-lg transition-colors duration-200 hover:cursor-pointer ${
+                tab.name === "Log out"
+                  ? "!text-red-500 hover:!bg-red-900/30"
+                  : "!text-white hover:bg-[#2C3B68]"
               }`}
             >
-              <tab.icon className="h-5 w-5 mr-3" />
-              <span>{tab.name}</span>
+              <tab.icon className="h-5 w-5 mr-3 " />
+              <span className="">{tab.name}</span>
             </a>
           ))}
         </nav>
       </div>
+
+      {/* Settings Modal */}
+      {isSettingsOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className=" xs:px-5 xs:-mt-40 2xs:-mt-20   relative text-lg max-w-3xl bg-[#0B1534] xs:w-[90%] nsl:w-[85%] nsl:p-10 sm:p-15 md:w-[70%] lg:p-20 2lg:mt-10 shadow-lg border border-[#1b254b]">
+            <button
+              type="button"
+              onClick={() => setIsSettingsOpen(false)}
+              className="absolute top-4 right-4 w-12 h-12 bg-gradient-to-r from-purple-900 via-blue-600 to-blue-800 rounded-lg hover:opacity-90 flex items-center justify-center"
+            >
+              <div className="absolute w-[90%] h-[90%] bg-[#0b112d] rounded-lg flex items-center justify-center">
+                <XIcon className="text-blue-600 font-bold w-6 h-6" />
+              </div>
+            </button>
+
+            <p className="text-2xl font-bold  ">Username & Password Settings</p>
+
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-8 mt-10 xs:text-[22px] 2xs:text-[20px] nsl:text-[18px] lg:text-[20px]"
+            >
+              {/* Admin username */}
+              <div>
+                <label className="block  text-md font-medium text-gray-300 mb-2">
+                  New username
+                </label>
+                <input
+                  type="text"
+                  name="admissionNo"
+                  value={formData.admissionNo}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-lg bg-blue-900 border border-[#1b254b] text-white focus:outline-none focus:border-blue-500"
+                  placeholder="Enter username"
+                  required
+                />
+                {hasCapitalLetter && (
+                  <p className="text-red-500">
+                    Username should be in lowercase
+                  </p>
+                )}
+
+                {containSpecialCharacter && (
+                  <p className="text-red-500 ">
+                    Admission no. cannot contain special characters
+                  </p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div>
+                <label className="block text-md font-medium text-gray-300 mb-2">
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 rounded-lg bg-blue-900 border border-[#1b254b] text-white focus:outline-none focus:border-blue-500"
+                  placeholder="Enter your new password"
+                  required
+                />
+                {passwordLength && (
+                  <p className="text-red-500 ">
+                    Password should be 8 characters long
+                  </p>
+                )}
+              </div>
+
+              {/* Submit */}
+              <div className="xs:w-full w-[40%] mx-auto mt-8">
+                <button
+                  type="submit"
+                  className="w-full py-2 bg-gradient-to-r from-purple-900 via-blue-600 to-blue-800  text-white rounded-lg font-medium hover:opacity-90"
+                  onClick={() =>
+                    setTimeout(() => setIsSettingsOpen(false), 1000)
+                  }
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Main Content and Header */}
       <div className="flex-1 flex flex-col">

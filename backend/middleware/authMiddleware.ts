@@ -17,9 +17,10 @@ export const authMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const token = req.cookies?.token; // Cookie name from your login route
+  const token = req.cookies?.token;
 
   if (!token) {
+    console.log("token from authmiddleware not found");
     return res
       .status(401)
       .json({ message: "No token provided. Unauthorized." });

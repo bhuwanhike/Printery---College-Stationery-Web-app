@@ -45,8 +45,6 @@ const uploadToCloudinary = (
 };
 
 const uploadFilesToCloudinary = async (req: Request, res: Response) => {
-  const { isColored, qty, status } = req.body;
-
   try {
     if (!req.files || !(req.files as Express.Multer.File[]).length) {
       return res.status(400).json({ error: "No files uploaded" });

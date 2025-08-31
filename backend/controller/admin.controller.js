@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.clearAllOrderedFiles = exports.deleteSelectedOrderedFile = exports.clearAllPrintouts = exports.deleteSelectedFile = exports.clearAllTickets = exports.deleteTicket = exports.changeTicketStatus = exports.getTickets = exports.orderPracticalFilesController = exports.changePrintoutStatus = exports.changeFileStatus = exports.getAllOrderedFilesController = void 0;
+exports.adminSettingsController = exports.clearAllOrderedFiles = exports.deleteSelectedOrderedFile = exports.clearAllPrintouts = exports.deleteSelectedFile = exports.clearAllTickets = exports.deleteTicket = exports.changeTicketStatus = exports.getTickets = exports.orderPracticalFilesController = exports.changePrintoutStatus = exports.changeFileStatus = exports.getAllOrderedFilesController = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const OrderedPracticalFiles_schema_1 = __importDefault(require("../schema/OrderedPracticalFiles.schema"));
@@ -21,6 +21,7 @@ const uploadableFiles_schema_1 = __importDefault(require("../schema/uploadableFi
 const help_schema_1 = __importDefault(require("../schema/help.schema"));
 const cloudinary_1 = __importDefault(require("cloudinary"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const sign_up_schema_1 = __importDefault(require("../schema/sign-up.schema"));
 cloudinary_1.default.v2.config({
     secure: true,
 });
@@ -276,3 +277,22 @@ const clearAllTickets = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.clearAllTickets = clearAllTickets;
+// Change admin details
+const adminSettingsController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { admissionNo, password, userID } = req.body;
+        const user = yield sign_up_schema_1.default.findById(userID);
+        if (!user) {
+            return res.status(404).json({ error: "No admin found" });
+        }
+        user.admissionNo = admissionNo;
+        user.password = password;
+        yield user.save();
+        res.status(200).json(user);
+    }
+    catch (error) {
+        console.error("Error changing admin details:", error);
+        res.status(500).json({ error: "Failed to change admin details" });
+    }
+});
+exports.adminSettingsController = adminSettingsController;

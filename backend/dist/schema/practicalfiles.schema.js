@@ -21,6 +21,10 @@ const practicalFilesSchema = new mongoose_1.default.Schema({
         type: String,
         required: true,
     },
+    amount: {
+        type: Number,
+        required: true,
+    },
     subject_code: {
         type: String,
         required: true,

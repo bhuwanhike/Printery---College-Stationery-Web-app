@@ -20,10 +20,13 @@ const YourOrders = () => {
   const [orderedFiles, setOrderedFiles] = useState<orderedFile[]>([]);
   const getOrderedFiles = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/order-practical-files`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/order-practical-files`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       data.finalOrders.forEach((file: orderedFile) => {
         if (file.status === "completed") {
@@ -50,10 +53,13 @@ const YourOrders = () => {
   };
   const deleteSelectedOrder = useCallback(async (_id: string) => {
     try {
-      await fetch(`${import.meta.env.VITE_BACKEND_URL}/order-practical-files/${_id}`, {
-        method: "PUT",
-        credentials: "include",
-      });
+      await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/order-practical-files/${_id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+        }
+      );
 
       setOrderedFiles((prev) => prev.filter((file) => file._id !== _id));
 
@@ -82,14 +88,17 @@ const YourOrders = () => {
 
       if (completedIds.length > 0) {
         // send all completed IDs to backend in one request
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/order-practical-files/deleteAll`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({ ids: completedIds }), // 👈 send array
-        });
+        fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/order-practical-files/deleteAll`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ ids: completedIds }), // 👈 send array
+          }
+        );
       }
 
       // also store them locally (to persist across refresh)
@@ -135,15 +144,17 @@ const YourOrders = () => {
   });
 
   return (
-    <div className="mx-auto w-[70%] h-full bg-[#0b112d] rounded-2xl p-8 shadow-lg border border-[#1b254b] my-30 px-20 flex flex-col gap-20 ">
-      <div className="py-10 px-10 w-full">
-        <p className="text-3xl font-bold text-white pl-8">Your Orders</p>
+    <div className="xs:min-w-[95%] xs:my-[10vh] 2xs:my-[12vh]  xsm:my-[12vh] nsl:my-[16vh] nsl:min-w-[85%] sm:min-w-[80%] sm:!p-12  md:min-w-[75%] md:my-45 xl:my-50  mx-auto bg-[#0b112d] w-[70%] h-full rounded-2xl xs:p-8 shadow-lg border border-[#1b254b] px-20 flex flex-col items-center justify-center xs:gap-15 gap-20 2xl:my-60  ">
+      <div className="xs:p-0 py-10 px-10 w-full">
+        <p className="xs:text-[19px] xsm:text-[22px] lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-white">
+          Your Orders
+        </p>
 
-        <hr className="my-5 border-1 border-transparent h-1 w-[100%] mx-auto bg-gradient-to-r from-red-600 to-blue-600" />
+        <hr className="xs:w-full xs:my-2 md:my-3 xsm:my-1 border-1 border-transparent xs:h-[3px] h-1 xs:min-w-[75vw]  bg-gradient-to-r from-red-600 to-blue-600 sm:min-w-[90%] md:min-w-[62vw] " />
 
-        <div className="flex flex-col items-center gap-10 py-10 px-10">
+        <div className="flex flex-col items-center gap-10 2xl:my-10">
           {/* Search and Filters Section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 border  border-gray-600 rounded-lg  mb-2 mt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 p-4 border  border-gray-600 rounded-lg  mb-2 mt-4 2xl:w-[60vw]">
             <div>
               <label className="text-md text-gray-300">Name</label>
               <input
@@ -200,11 +211,12 @@ const YourOrders = () => {
               </select>
             </div>
           </div>
-          <div className="flex flex-col min-w-full text-gray-300 justify-center">
-            <div className="flex border-b border-gray-700 w-[100%] mx-auto font-semibold  py-2 justify-center">
-              <div className="w-1/6 text-center">File Code</div>
+
+          <div className="flex flex-col w-[100%] text-gray-300 justify-center xs:overflow-x-scroll 2lg:overflow-x-hidden">
+            <div className="flex xs:w-[400vw] 2xs:w-[300vw] xxs:w-[250vw] xsm:w-[200vw] xsl:w-[180vw]  nsl:mx-3 nsl:w-[150vw] sm:w-[150vw] md:mx-9 md:w-[100vw] xs:text-[20px]  lg:w-[80vw] lg:mx-auto 2lg:w-[100%]  border-b border-gray-700 font-semibold xs:px-1 items-center py-2 justify-center bg-gray-700 nsl:text-[15px] rounded-sm  sm:text-[15px] sm:mb-4 2xl:w-[60vw] 2xl:text-lg">
+              <div className="w-2/6 text-center">File Code</div>
               <div className="w-2/6 text-center">File Name</div>
-              <div className="w-1/6 text-center">Branch</div>
+              <div className="w-2/6 text-center">Branch</div>
               <div className="w-1/6 text-center">Year</div>
               <div className="w-1/6 text-center">Qty</div>
               <div className="w-2/6 text-center">Status</div>
@@ -213,29 +225,31 @@ const YourOrders = () => {
               {filteredFiles.length > 0 ? (
                 filteredFiles.map((file, index) => (
                   <div
-                    className="flex items-center border-b border-gray-800 w-[100%] mx-auto py-2  justify-center"
+                    className="flex xs:w-[400vw]  2xs:w-[300vw] xxs:w-[250vw] xsl:w-[180vw] xsm:w-[200vw] nsl:mx-3 nsl:w-[150vw] sm:w-[150vw] md:mx-9 md:w-[100vw] xs:mt-3 lg:w-[80vw] lg:mx-auto 2lg:w-[100%] border-b border-gray-700 font-semibold xs:px-0 px-4 py-2 justify-center items-center 2xl:w-[60vw]"
                     key={index}
                   >
-                    <div className="w-1/6 flex items-center justify-center ">
-                      {file.subject_code}
+                    <div className="w-2/6 flex items-center  xs:justify-center ">
+                      <span className="">{file.subject_code}</span>
                     </div>
 
-                    <div className="w-2/6 flex items-center justify-start truncate">
-                      {file.name}
+                    <div className="w-2/6 flex items-center  xs:justify-center xs:pl-4  sm:justify-start truncate ">
+                      <span className="w-[90%] truncate">{file.name}</span>
                     </div>
 
-                    <div className="w-1/6 flex items-center justify-center ">
+                    <div className="w-2/6 flex items-center  xs:justify-center">
                       {file.department}
                     </div>
-                    <div className="w-1/6 flex items-center justify-center ">
+
+                    <div className="w-1/6 flex items-center  xs:justify-center">
                       {file.year}
                     </div>
 
-                    <div className="w-1/6 flex justify-center items-center">
+                    <div className="w-1/6 flex items-center  xs:justify-center">
                       {file.qty}
                     </div>
+
                     <div
-                      className={`w-2/6 flex justify-center items-center gap-4`}
+                      className={`w-2/6 flex justify-center items-center xs:gap-2  gap-4`}
                     >
                       {file.status === "completed" ? (
                         <div className="flex items-center gap-2">
@@ -250,17 +264,17 @@ const YourOrders = () => {
                       )}
                       {file.status === "completed" && (
                         <button
-                          className="flex items-center justify-center !text-white !bg-red-800 !py-2 rounded-lg hover:!bg-red-700/70"
+                          className="flex items-center xs:!px-3 xs:!py-3 xs:text-sm md:!px-2 md:!py-2 justify-center xs:gap-1 gap-2  !text-md font-bold text-white !bg-red-800   hover:!bg-red-700/30 "
                           onClick={() => deleteSelectedOrder(file._id)}
                         >
-                          <Trash2 className="h-5 w-5 " />
+                          <Trash2 className="xs:w-6 xs:h-6 xsm:w-5 xsm:h-5 md:w-6 md:h-6 " />
                         </button>
                       )}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="flex items-center justify-center w-full h-full mt-8">
+                <div className="xs:mt-4 xs:text-[20px] xxs:mt-8 text-gray-300 flex items-center justify-center xsl:text-[16px] xsl:py-8 xsm:text-[15px] 2xl:text-xl">
                   No files found
                 </div>
               )}
@@ -270,7 +284,7 @@ const YourOrders = () => {
         <div className="flex justify-center">
           {allOrderesCompleted && filteredFiles.length > 0 && (
             <button
-              className="!bg-blue-600 !p-2 hover:!bg-blue-800 "
+              className="xs:mt-4 xs:!p-3 flex xs:text-[20px] flex-col items-center xs:text-sm md:text-[16px] md:mt-6 !bg-blue-600  hover:!bg-blue-800 xsm:!p-2 xsl:text-lg xsl:!px-4 2xl:!text-xl"
               onClick={clearAllOrderedFiles}
             >
               Clear all

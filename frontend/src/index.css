@@ -44,7 +44,15 @@ body,
 
   min-width: 320px;
   min-height: 100vh;
-  /* overflow: hidden; */
+
+  text-overflow: clip;
+}
+@media (min-width: 200px) and (max-width: 390px) {
+  body,
+  #root {
+    overflow: auto;
+    text-overflow: clip;
+  }
 }
 
 h1 {

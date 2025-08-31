@@ -7,8 +7,9 @@ exports.authMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authMiddleware = (req, res, next) => {
     var _a;
-    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token; // Cookie name from your login route
+    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
     if (!token) {
+        console.log("token from authmiddleware not found");
         return res
             .status(401)
             .json({ message: "No token provided. Unauthorized." });
