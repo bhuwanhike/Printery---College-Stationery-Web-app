@@ -178,8 +178,6 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
     <div className="flex flex-col items-center gap-10">
       {/* Search and Filters Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border  border-gray-600 rounded-lg  mb-2 mt-4">
-        
-        
         <div>
           <label className="text-md text-gray-300">Name</label>
           <input
@@ -216,11 +214,8 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
             <option value="Common">Common</option>
           </select>
         </div>
-
-
       </div>
 
-      
       <div className="flex flex-col w-[100%] text-gray-300 justify-center xs:overflow-x-scroll">
         <div className="flex xs:w-[500vw] 2xs:w-[400vw] xxs:w-[300vw] xsm:w-[200vw] xsl:w-[200vw]  nsl:mx-3 nsl:w-[150vw] sm:w-[150vw] md:mx-9 md:w-[150vw] xs:text-[20px]  lg:w-[100vw] lg:mx-auto 2lg:w-[90vw] xl:w-[80vw] border-b border-gray-700 font-semibold xs:px-1 items-center py-2 justify-center bg-gray-700 nsl:text-[15px] rounded-sm  sm:text-[15px] sm:mb-4 2xl:w-[60vw] 2xl:text-lg">
           <div className="w-2/6 text-center">File Code</div>
@@ -321,10 +316,10 @@ const SemesterFileContent = ({ activeCard }: { activeCard: number | null }) => {
             Total Amount:{" "}
             <span className="font-bold">
               ₹
-              {placeOrderFiles.reduce(
+              {/* {placeOrderFiles.reduce(
                 (acc, file) => acc + file.amount * fileQuantities[file._id],
                 0
-              )}
+              )} */}
             </span>
           </div>
           <button

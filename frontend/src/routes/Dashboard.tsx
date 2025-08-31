@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { PlusIcon, MinusIcon } from "lucide-react";
-import { File, OctagonAlert, CircleCheckBig, Trash2, X } from "lucide-react";
+import { File, OctagonAlert, CircleCheckBig, Trash2 } from "lucide-react";
 import { useUser } from "../context/useUser";
 
 const pdfIcon = "https://placehold.co/40x40/737373/000000?text=PDF";
