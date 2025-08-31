@@ -72,39 +72,30 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // User route required but user is admin - show restriction notice
   if (requireUser && isAdmin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
-          <div className="mb-6">
-            <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">⚠️</span>
+      <div className="min-h-screen flex items-center justify-center px-4 xs:px-6 sm:px-8">
+        <div className="w-full max-w-xs xs:max-w-sm xxs:max-w-md xsm:max-w-lg sm:max-w-xl md:max-w-2xl bg-white rounded-lg shadow-lg p-4 xs:p-6 sm:p-8 text-center">
+          <div className="mb-4 xs:mb-6 md:px-10">
+            <div className="w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 xs:mb-4 ">
+              <span className="text-xl xs:text-2xl">⚠️</span>
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            <h2 className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2">
               Access Restricted
             </h2>
-            <p className="text-gray-600">
-              Admin accounts cannot access user features like uploads and
-              orders.
+            <p className="text-sm xs:text-base text-gray-600 px-2 xs:px-0 md:text-xl">
+              Admin cannot access user features like uploads and file orders.
             </p>
           </div>
 
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-blue-700">
-              <strong>Need to use app features?</strong>
-              <br />
-              Create a separate user account for uploads and orders.
-            </p>
-          </div>
-
-          <div className="flex space-x-3">
-            <button
-              onClick={() => window.history.back()}
-              className="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition"
+          <div className="flex items-center justify-center xs:flex-col xs:gap-2 xsl:flex-row md:gap-12">
+            <a
+              href="/login"
+              className="flex-1 xs:w-full items-center justify-center bg-gray-500 !text-white py-3 px-4 rounded-lg hover:bg-gray-600 transition text-sm xs:text-base md:text-lg"
             >
-              Go Back
-            </button>
+              User login
+            </a>
             <a
               href="/admin/dashboard"
-              className="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition text-center"
+              className="flex-1 xs:w-full items-center justify-center bg-purple-600 !text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition text-center text-sm xs:text-base md:text-lg"
             >
               Admin Dashboard
             </a>

@@ -12,12 +12,14 @@ import YourOrders from "./routes/YourOrders";
 import Help from "./routes/Help";
 import Account from "./routes/Account";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import { useUser } from "../src/context/useUser";
 
 function App() {
   const location = useLocation();
-  const hideNavbar = ["/login", "/sign-up", "/admin/dashboard"].includes(
-    location.pathname
-  );
+  const { isAdmin } = useUser();
+  const hideNavbar =
+    ["/login", "/sign-up", "/admin/dashboard"].includes(location.pathname) ||
+    (isAdmin && location.pathname.startsWith("/"));
   return (
     <>
       {!hideNavbar && <Navbar />}

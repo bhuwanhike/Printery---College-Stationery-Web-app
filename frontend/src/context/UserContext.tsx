@@ -6,6 +6,8 @@ interface UserContextType {
   setAdmissionNo: (no: string | null) => void;
   userID: string | null;
   setUserID: (id: string | null) => void;
+  isAdmin: boolean;
+  setIsAdmin: (admin: boolean) => void;
   fetchAdmissionNo: () => void;
   clearUser: () => void;
 }
@@ -17,17 +19,21 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
 
   const [userID, setUserID] = useState<string | null>(null);
 
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
   const fetchAdmissionNo = async () => {
     const meRes = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, {
       method: "GET",
       credentials: "include",
     });
+
     // console.log(meRes);
     if (!meRes.ok) throw new Error("Unable to fetch user info");
 
     const meData = await meRes.json();
     setAdmissionNo(meData.admissionNo);
     setUserID(meData.userId);
+    setIsAdmin(meData.isAdmin);
   };
 
   const clearUser = () => {
@@ -46,6 +52,8 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
         setAdmissionNo,
         userID,
         setUserID,
+        isAdmin,
+        setIsAdmin,
         fetchAdmissionNo,
         clearUser,
       }}
