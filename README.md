@@ -100,3 +100,7 @@ Printery is a full-stack MERN web application designed to simplify the process o
    ```bash
    http://localhost:3000
    ```
+
+### Application Design
+
+Link: [Application Design](https://www.tldraw.com/f/X_n84zxaelzDrMWwGjgMw?d=v-344.3805.3288.2064.SnCXnuL1MEZNoV5d5MZV5)
