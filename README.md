@@ -81,11 +81,11 @@ Printery is a full-stack MERN web application designed to simplify the process o
    CORS_ORIGIN=http://localhost:5173
    ```
 
-🔹 Frontend (frontend/.env)
+   🔹 Frontend (frontend/.env)
 
-    ```bash
-    VITE_BACKEND_URL=http://localhost:3000
-    ```
+   ```bash
+   VITE_BACKEND_URL=http://localhost:3000
+   ```
 
 4. Start development servers:
 
